@@ -8,8 +8,5 @@ import lombok.*;
 @NotBlank
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class AsesorLegal extends Empleado{
 }

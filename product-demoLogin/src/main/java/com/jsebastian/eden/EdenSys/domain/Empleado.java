@@ -11,9 +11,6 @@ import lombok.*;
 @NotBlank
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class Empleado extends Persona{
 
     @NotNull
