@@ -14,7 +14,7 @@ import java.util.Optional;
  * Controlador REST para gestionar operaciones CRUD de usuarios
  */
 @RestController
-@RequestMapping("/api/usuarios")
+@RequestMapping("/usuarios")
 @CrossOrigin(origins = "*")
 public class UserController {
 
