@@ -2,11 +2,14 @@ package com.jsebastian.eden.EdenSys.controller;
 
 import com.jsebastian.eden.EdenSys.domain.User;
 import com.jsebastian.eden.EdenSys.services.UserService;
+import com.jsebastian.eden.EdenSys.Dtos.CrearUsuarioDto;
+import com.jsebastian.eden.EdenSys.exceptions.ValueConflictException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,17 +25,19 @@ public class UserController {
     private UserService userService;
 
     /**
-     * Crea un nuevo usuario
-     * @param user el usuario a crear
+     * Crea un nuevo usuario usando DTO con validaciones Jakarta
+     * @param crearUsuarioDto el DTO con los datos del usuario a crear
      * @return ResponseEntity con el usuario creado
      */
     @PostMapping
-    public ResponseEntity<User> crearUsuario(@RequestBody User user) {
+    public ResponseEntity<?> crearUsuario(@Valid @RequestBody CrearUsuarioDto crearUsuarioDto) {
         try {
-            User usuarioCreado = userService.guardarUsuario(user);
+            User usuarioCreado = userService.crearUsuario(crearUsuarioDto);
             return new ResponseEntity<>(usuarioCreado, HttpStatus.CREATED);
+        } catch (ValueConflictException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Error interno del servidor", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
