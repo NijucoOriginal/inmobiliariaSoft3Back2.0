@@ -1,0 +1,134 @@
+### Creación de Usuario - Casos de Prueba HTTP
+### Ejecutar con el servidor corriendo en http://localhost:8080
+
+### 1. Crear usuario exitoso
+POST http://localhost:8080/api/usuarios
+Content-Type: application/json
+
+{
+  "email": "usuario@ejemplo.com",
+  "contrasena": "MiPassword123"
+}
+
+### 2. Crear usuario con email duplicado (debe fallar)
+POST http://localhost:8080/api/usuarios
+Content-Type: application/json
+
+{
+  "email": "usuario@ejemplo.com",
+  "contrasena": "MiPassword456"
+}
+
+### 3. Crear usuario con email vacío (validación Jakarta)
+POST http://localhost:8080/api/usuarios
+Content-Type: application/json
+
+{
+  "email": "",
+  "contrasena": "MiPassword123"
+}
+
+### 4. Crear usuario con email inválido (validación Jakarta)
+POST http://localhost:8080/api/usuarios
+Content-Type: application/json
+
+{
+  "email": "email-invalido",
+  "contrasena": "MiPassword123"
+}
+
+### 5. Crear usuario con contraseña vacía (validación Jakarta)
+POST http://localhost:8080/api/usuarios
+Content-Type: application/json
+
+{
+  "email": "usuario2@ejemplo.com",
+  "contrasena": ""
+}
+
+### 6. Crear usuario con contraseña débil (validación Jakarta)
+POST http://localhost:8080/api/usuarios
+Content-Type: application/json
+
+{
+  "email": "usuario3@ejemplo.com",
+  "contrasena": "123456"
+}
+
+### 7. Crear usuario con contraseña sin mayúscula (validación Jakarta)
+POST http://localhost:8080/api/usuarios
+Content-Type: application/json
+
+{
+  "email": "usuario4@ejemplo.com",
+  "contrasena": "mipassword123!"
+}
+
+### 8. Crear usuario con contraseña sin número (validación Jakarta)
+POST http://localhost:8080/api/usuarios
+Content-Type: application/json
+
+{
+  "email": "usuario5@ejemplo.com",
+  "contrasena": "MiPassword!"
+}
+
+### 9. Crear usuario con contraseña sin carácter especial (validación Jakarta)
+POST http://localhost:8080/api/usuarios
+Content-Type: application/json
+
+{
+  "email": "usuario6@ejemplo.com",
+  "contrasena": "MiPassword123"
+}
+
+### 10. Crear usuario con email muy largo (validación Jakarta)
+POST http://localhost:8080/api/usuarios
+Content-Type: application/json
+
+{
+  "email": "usuario.muy.largo.con.muchos.caracteres.para.probar.la.validacion.de.longitud.maxima.que.debe.ser.de.150.caracteres@ejemplo.com",
+  "contrasena": "MiPassword123!"
+}
+
+### 11. Crear usuario con email normalizado (espacios y mayúsculas)
+POST http://localhost:8080/api/usuarios
+Content-Type: application/json
+
+{
+  "email": "  USUARIO@EJEMPLO.COM  ",
+  "contrasena": "MiPassword123!"
+}
+
+### 12. Crear usuario con contraseña válida completa
+POST http://localhost:8080/api/usuarios
+Content-Type: application/json
+
+{
+  "email": "usuario.valido@ejemplo.com",
+  "contrasena": "MiPassword123!"
+}
+
+### 13. Crear usuario con múltiples errores de validación
+POST http://localhost:8080/api/usuarios
+Content-Type: application/json
+
+{
+  "email": "email-invalido",
+  "contrasena": "123"
+}
+
+### 14. Crear usuario sin campos (validación Jakarta)
+POST http://localhost:8080/api/usuarios
+Content-Type: application/json
+
+{
+}
+
+### 15. Crear usuario con JSON malformado
+POST http://localhost:8080/api/usuarios
+Content-Type: application/json
+
+{
+  "email": "usuario@ejemplo.com",
+  "contrasena": "MiPassword123!"
