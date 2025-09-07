@@ -1,10 +1,6 @@
 package com.jsebastian.eden.EdenSys.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -19,6 +15,7 @@ import lombok.NoArgsConstructor;
 public class User extends Persona {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "id", updatable = false, nullable = false)
+    private String id;
+    private String codigoActivacion;
 }

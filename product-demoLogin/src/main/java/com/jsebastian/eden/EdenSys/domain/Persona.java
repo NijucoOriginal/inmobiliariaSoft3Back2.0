@@ -33,4 +33,20 @@ public abstract class Persona {
 
     @Enumerated(EnumType.STRING)
     private Rol rol = Rol.USER;
+
+    @NotBlank(message = "El nombre es obligatorio")
+    @Size(max = 50, message = "El nombre no puede exceder 50 caracteres")
+    private String nombre;
+
+    @NotBlank(message = "El apellido es obligatorio")
+    @Size(max = 50, message = "El apellido no puede exceder 50 caracteres")
+    private String apellido;
+
+    @NotBlank(message = "El documento de identidad es obligatorio")
+    @Size(max = 20, message = "El documento de identidad no puede exceder 20 caracteres")
+    private String documentoIdentidad;
+
+    @NotBlank(message = "El teléfono es obligatorio")
+    @Size(max = 20, message = "El teléfono no puede exceder 20 caracteres")
+    private String telefono;
 }

@@ -2,46 +2,28 @@ package com.jsebastian.eden.EdenSys.mappers;
 
 import com.jsebastian.eden.EdenSys.domain.User;
 import com.jsebastian.eden.EdenSys.Dtos.CrearUsuarioDto;
-import org.springframework.stereotype.Component;
+import com.jsebastian.eden.EdenSys.Dtos.UsuarioResponse;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.factory.Mappers;
 
-/**
- * Mapper para transformar entre DTOs y entidades de User
- */
-@Component
-public class UserMapper {
+@Mapper(componentModel = "spring")
+public interface UserMapper {
+    UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
-    /**
-     * Convierte un CrearUsuarioDto a una entidad User
-     * @param dto el DTO con los datos del usuario
-     * @return la entidad User creada
-     */
-    public User toEntity(CrearUsuarioDto dto) {
-        if (dto == null) {
-            return null;
-        }
-        
-        User user = new User();
-        user.setEmail(dto.getEmail().trim().toLowerCase());
-        user.setContrasena(dto.getContrasena());
-        // El rol se establece automáticamente como USER por defecto desde Persona
-        
-        return user;
-    }
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "nombre", source = "nombre")
+    @Mapping(target = "apellido", source = "apellido")
+    @Mapping(target = "documentoIdentidad", source = "documentoIdentidad")
+    @Mapping(target = "telefono", source = "telefono")
+    @Mapping(target = "email", source = "email")
+    @Mapping(target = "contrasena", source = "contrasena")
+    @Mapping(target = "rol", source = "rol")
+    User toEntity(CrearUsuarioDto dto); // Mapea CrearUsuarioDto a User
 
-    /**
-     * Convierte una entidad User a un CrearUsuarioDto
-     * @param user la entidad User
-     * @return el DTO con los datos del usuario
-     */
-    public CrearUsuarioDto toDto(User user) {
-        if (user == null) {
-            return null;
-        }
-        
-        CrearUsuarioDto dto = new CrearUsuarioDto();
-        dto.setEmail(user.getEmail());
-        dto.setContrasena(user.getContrasena());
-        
-        return dto;
-    }
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "email", source = "email")
+    @Mapping(target = "rol", source = "rol")
+    UsuarioResponse toUsuarioResponse(User user); // Mapea User a UsuarioResponse
 }
+

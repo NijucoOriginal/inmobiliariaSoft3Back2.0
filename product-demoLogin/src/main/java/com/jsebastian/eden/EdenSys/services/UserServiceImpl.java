@@ -1,19 +1,33 @@
 package com.jsebastian.eden.EdenSys.services;
 
+import ch.qos.logback.classic.Logger;
+import com.jsebastian.eden.EdenSys.Dtos.UsuarioResponse;
+import com.jsebastian.eden.EdenSys.domain.Rol;
 import com.jsebastian.eden.EdenSys.domain.User;
 import com.jsebastian.eden.EdenSys.repository.UserRepository;
 import com.jsebastian.eden.EdenSys.Dtos.CrearUsuarioDto;
 import com.jsebastian.eden.EdenSys.mappers.UserMapper;
 import com.jsebastian.eden.EdenSys.exceptions.ValueConflictException;
+// API DE MENSAJES
+
+import com.sendgrid.*;
+
+import com.sendgrid.helpers.mail.objects.Email;
+import lombok.RequiredArgsConstructor;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
+
 
 /**
  * Implementación del servicio para gestionar operaciones relacionadas con usuarios
  */
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     @Autowired
@@ -21,6 +35,20 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private SendGrid sendGrid;
+
+    @Value("${sendgrid.from.email}")
+    private String fromEmail;
+    @Value("${sendgrid.from.name}")
+    private String fromName;
+
+    private static final Logger logger = (Logger) LoggerFactory.getLogger(UserServiceImpl.class);
+
+    private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
+
 
     /**
      * Guarda un nuevo usuario en la base de datos
@@ -40,21 +68,54 @@ public class UserServiceImpl implements UserService {
      * @throws ValueConflictException si el email ya existe
      */
     @Override
-    public User crearUsuario(CrearUsuarioDto crearUsuarioDto) {
-        // Normalizar el email antes de verificar existencia
-        String emailNormalizado = crearUsuarioDto.getEmail().trim().toLowerCase();
-        
-        // Verificar si el email ya existe (usando el email normalizado)
-        if (existePorEmail(emailNormalizado)) {
-            throw new ValueConflictException("Ya existe un usuario con este email: " + emailNormalizado);
-        }
-        
-        // Usar el mapper para convertir DTO a entidad (el mapper ya normaliza el email)
-        User nuevoUsuario = userMapper.toEntity(crearUsuarioDto);
-        
-        // Guardar en la base de datos
-        return userRepository.save(nuevoUsuario);
+    public UsuarioResponse crearUsuario(CrearUsuarioDto crearUsuarioDto)  {
+
+        String emailNormalizado = crearUsuarioDto.email().trim().toLowerCase();
+        if (existePorEmail(emailNormalizado)) {throw new ValueConflictException("Ya existe un usuario con este email: " + emailNormalizado);}
+        if(userRepository.findByEmail(crearUsuarioDto.email()).isPresent()) { throw new ValueConflictException("el email ya esta registrado"); }
+
+        /*logica para la validación de cuentas por activación
+        Crear la entidad User a partir del DTO para asignar una creación temporal mientras se activa la cuenta*/
+
+        var nuevoUsuario = userMapper.toEntity(crearUsuarioDto);
+            nuevoUsuario.setId(java.util.UUID.randomUUID().toString());
+            nuevoUsuario.setContrasena(passwordEncoder.encode(crearUsuarioDto.contrasena()));
+            nuevoUsuario.setCodigoActivacion(java.util.UUID.randomUUID().toString());
+            nuevoUsuario.setRol(Rol.PENDIENTE);
+
+        enviarCodigoEmailActivacion(nuevoUsuario);
+        userRepository.save(nuevoUsuario);
+        return userMapper.toUsuarioResponse(nuevoUsuario);
     }
+
+    /**
+     * Metodo privado para enviar el código de activación por email usando SendGrid
+     * @param nuevoUsuario
+     */
+    private void enviarCodigoEmailActivacion(User nuevoUsuario) {
+        // Generar código alfanumérico de 6 caracteres
+        String codigo = java.util.UUID.randomUUID().toString().replaceAll("[^A-Za-z0-9]", "").substring(0, 6);
+        nuevoUsuario.setCodigoActivacion(codigo);
+        String to = nuevoUsuario.getEmail();
+        String subject = "Código de activación de tu cuenta";
+        String content = "Hola, " + nuevoUsuario.getNombre() + ". Tu código de activación es: " + codigo;
+
+        Email from = new Email(fromEmail, fromName);
+        Email toEmail = new Email(to);
+        com.sendgrid.helpers.mail.Mail mail = new com.sendgrid.helpers.mail.Mail(from, subject, toEmail, new com.sendgrid.helpers.mail.objects.Content("text/plain", content));
+
+        Request request = new Request();
+        try {
+            request.setMethod(Method.POST);
+            request.setEndpoint("mail/send");
+            request.setBody(mail.build());
+            sendGrid.api(request);
+            logger.info("Correo de activación enviado a: {}", to);
+        } catch (Exception ex) {
+            logger.error("Error enviando correo de activación: {}", ex.getMessage());
+        }
+    }
+
 
     /**
      * Busca un usuario por su email
@@ -83,7 +144,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public Optional<User> buscarPorCedula(String cedula) {
-        return userRepository.findByCedula(cedula);
+        return userRepository.findByDocumentoIdentidad(cedula);
     }
 
     /**
@@ -133,7 +194,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public boolean existePorCedula(String cedula) {
-        return userRepository.existsByCedula(cedula);
+        return userRepository.existsByDocumentoIdentidad(cedula);
     }
 
     /**
@@ -142,10 +203,64 @@ public class UserServiceImpl implements UserService {
      * @return el usuario actualizado
      */
     @Override
-    public User actualizarUsuario(User user) {
-        if (user.getId() != null && userRepository.existsById(user.getId())) {
-            return userRepository.save(user);
+    public Optional<UsuarioResponse> actualizarUsuario(String id,CrearUsuarioDto user) {
+        return Optional.empty();
+    }
+
+    /**
+     * Activa un usuario basado en el código de activación
+     * @param codigo el código de activación
+     * @return true si la activación fue exitosa, false en caso contrario
+     */
+    @Override
+    public boolean activarUsuario(String codigo) {
+        Optional<User> usuarioOptional = userRepository.findByCodigoActivacion(codigo);
+
+        if (usuarioOptional.isPresent()) {
+            User usuario = usuarioOptional.get();
+
+            // Verificar si el usuario ya está activado
+            if (usuario.getRol() != Rol.PENDIENTE) {
+                logger.warn("El usuario con email {} ya está activado.", usuario.getEmail());
+                return false;
+            }
+
+            // Actualizar el rol del usuario a CLIENTE
+            usuario.setRol(Rol.CLIENTE);
+            usuario.setCodigoActivacion(null); // Eliminar el código de activación
+            userRepository.save(usuario);
+
+            logger.info("Usuario con email {} activado exitosamente.", usuario.getEmail());
+            return true;
+        } else {
+            logger.warn("Código de activación inválido: {}", codigo);
+            return false;
         }
-        throw new IllegalArgumentException("El usuario no existe o no tiene ID válido");
+    }
+
+    /**
+     * Valida las credenciales del usuario y genera un token JWT
+     * @param email el email del usuario
+     * @param contrasena la contraseña del usuario
+     * @return el token JWT generado
+     * @throws IllegalArgumentException si las credenciales son inválidas
+     */
+    @Override
+    public String validarCredencialesYGenerarToken(String email, String contrasena) {
+        Optional<User> usuarioOptional = userRepository.findByEmail(email);
+
+        if (usuarioOptional.isPresent()) {
+            User usuario = usuarioOptional.get();
+
+            // Verificar la contraseña
+            if (passwordEncoder.matches(contrasena, usuario.getContrasena())) {
+                // Generar el token JWT
+                return jwtService.generateToken(usuario);
+            } else {
+                throw new IllegalArgumentException("Contraseña incorrecta.");
+            }
+        } else {
+            throw new IllegalArgumentException("Usuario no encontrado con el email proporcionado.");
+        }
     }
 }
