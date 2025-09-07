@@ -56,7 +56,7 @@ public class SecurityConfig {
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/api/usuarios").permitAll() // crear usuario (registro)
-                        .requestMatchers("/api/auth/activate").permitAll()
+                        .requestMatchers("/api/auth/activate/**").permitAll()
                         .requestMatchers("/api/auth/login").permitAll()
                         .requestMatchers("/api/usuarios/**").hasAuthority("CLIENTE")
                         .anyRequest().authenticated()
