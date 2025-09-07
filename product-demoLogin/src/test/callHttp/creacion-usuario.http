@@ -15,7 +15,7 @@ Content-Type: application/json
 }
 
 ### 2. Activar cuenta de usuario
-### Activar usuario con código de activación
+### Activar usuario con código de activación ---agregar el código recibido por correo
 GET http://localhost:9020/api/auth/activate/7b7e04
 Accept: application/json
 
