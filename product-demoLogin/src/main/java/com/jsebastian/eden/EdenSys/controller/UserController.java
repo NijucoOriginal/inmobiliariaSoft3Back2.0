@@ -12,7 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -21,6 +23,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/usuarios")
+@CrossOrigin("http://localhost:4200")
 
 public class UserController {
 
@@ -33,13 +36,25 @@ public class UserController {
      * @return ResponseEntity con el usuario creado
      */
     @PostMapping
-    public ResponseEntity<UsuarioResponse> crearUsuario(@Valid @RequestBody CrearUsuarioDto crearUsuarioDto) {
+    public ResponseEntity<?> crearUsuario(@Valid @RequestBody CrearUsuarioDto crearUsuarioDto) {
         try {
-            return ResponseEntity.ok(userService.crearUsuario(crearUsuarioDto));
+            UsuarioResponse response = userService.crearUsuario(crearUsuarioDto);
+            return ResponseEntity.ok(response);
         } catch (ValueConflictException e) {
-            return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Conflicto de datos");
+            errorResponse.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+        } catch (RuntimeException e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Error interno del servidor");
+            errorResponse.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Error inesperado");
+            errorResponse.put("message", "Ocurrió un error al procesar la solicitud");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
 

@@ -71,21 +71,25 @@ public class UserServiceImpl implements UserService {
     public UsuarioResponse crearUsuario(CrearUsuarioDto crearUsuarioDto)  {
 
         String emailNormalizado = crearUsuarioDto.email().trim().toLowerCase();
-        if (existePorEmail(emailNormalizado)) {throw new ValueConflictException("Ya existe un usuario con este email: " + emailNormalizado);}
-        if(userRepository.findByEmail(crearUsuarioDto.email()).isPresent()) { throw new ValueConflictException("el email ya esta registrado"); }
+        if (existePorEmail(emailNormalizado)) {
+            throw new ValueConflictException("Ya existe un usuario con este email: " + emailNormalizado);
+        }
 
-        /*logica para la validación de cuentas por activación
-        Crear la entidad User a partir del DTO para asignar una creación temporal mientras se activa la cuenta*/
+        try {
+            /*logica para la validación de cuentas por activación
+            Crear la entidad User a partir del DTO para asignar una creación temporal mientras se activa la cuenta*/
 
-        var nuevoUsuario = userMapper.toEntity(crearUsuarioDto);
-            nuevoUsuario.setId(java.util.UUID.randomUUID().toString());
+            var nuevoUsuario = userMapper.toEntity(crearUsuarioDto);
             nuevoUsuario.setContrasena(passwordEncoder.encode(crearUsuarioDto.contrasena()));
-            nuevoUsuario.setCodigoActivacion(java.util.UUID.randomUUID().toString());
             nuevoUsuario.setRol(Rol.PENDIENTE);
 
-        enviarCodigoEmailActivacion(nuevoUsuario);
-        userRepository.save(nuevoUsuario);
-        return userMapper.toUsuarioResponse(nuevoUsuario);
+            enviarCodigoEmailActivacion(nuevoUsuario);
+            userRepository.save(nuevoUsuario);
+            return userMapper.toUsuarioResponse(nuevoUsuario);
+        } catch (Exception e) {
+            logger.error("Error al crear usuario con email: {}", emailNormalizado, e);
+            throw new RuntimeException("Error al crear el usuario: " + e.getMessage(), e);
+        }
     }
 
     /**
@@ -249,12 +253,15 @@ public class UserServiceImpl implements UserService {
     public String validarCredencialesYGenerarToken(String email, String contrasena) {
         Optional<User> usuarioOptional = userRepository.findByEmail(email);
 
+        System.out.println("Validando credenciales para el email: " + email);
         if (usuarioOptional.isPresent()) {
             User usuario = usuarioOptional.get();
+            System.out.println("Usuario encontrado: " + usuario.getEmail());
 
             // Verificar la contraseña
             if (passwordEncoder.matches(contrasena, usuario.getContrasena())) {
                 // Generar el token JWT
+                System.out.println("Contraseña válida, token generado.");
                 return jwtService.generateToken(usuario);
             } else {
                 throw new IllegalArgumentException("Contraseña incorrecta.");

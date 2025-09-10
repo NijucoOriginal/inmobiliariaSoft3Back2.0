@@ -15,7 +15,8 @@ import lombok.NoArgsConstructor;
 public class User extends Persona {
 
     @Id
-    @Column(name = "id", updatable = false, nullable = false)
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
     private String codigoActivacion;
 }
