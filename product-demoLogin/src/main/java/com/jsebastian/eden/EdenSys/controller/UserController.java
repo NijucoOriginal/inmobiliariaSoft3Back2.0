@@ -1,28 +1,34 @@
 package com.jsebastian.eden.EdenSys.controller;
 
+import com.jsebastian.eden.EdenSys.Dtos.UsuarioResponse;
 import com.jsebastian.eden.EdenSys.domain.User;
 import com.jsebastian.eden.EdenSys.services.UserService;
 import com.jsebastian.eden.EdenSys.Dtos.CrearUsuarioDto;
 import com.jsebastian.eden.EdenSys.exceptions.ValueConflictException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
  * Controlador REST para gestionar operaciones CRUD de usuarios
  */
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/usuarios")
-@CrossOrigin(origins = "*")
+@CrossOrigin("http://localhost:4200")
+
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+
+    private final UserService userService;
 
     /**
      * Crea un nuevo usuario usando DTO con validaciones Jakarta
@@ -32,14 +38,26 @@ public class UserController {
     @PostMapping
     public ResponseEntity<?> crearUsuario(@Valid @RequestBody CrearUsuarioDto crearUsuarioDto) {
         try {
-            User usuarioCreado = userService.crearUsuario(crearUsuarioDto);
-            return new ResponseEntity<>(usuarioCreado, HttpStatus.CREATED);
+            UsuarioResponse response = userService.crearUsuario(crearUsuarioDto);
+            return ResponseEntity.ok(response);
         } catch (ValueConflictException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Conflicto de datos");
+            errorResponse.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+        } catch (RuntimeException e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Error interno del servidor");
+            errorResponse.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         } catch (Exception e) {
-            return new ResponseEntity<>("Error interno del servidor", HttpStatus.INTERNAL_SERVER_ERROR);
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Error inesperado");
+            errorResponse.put("message", "Ocurrió un error al procesar la solicitud");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
+
 
     /**
      * Obtiene todos los usuarios
@@ -94,11 +112,11 @@ public class UserController {
      * @return ResponseEntity con el usuario actualizado
      */
     @PutMapping("/{id}")
-    public ResponseEntity<User> actualizarUsuario(@PathVariable Long id, @RequestBody User user) {
+    public ResponseEntity<UsuarioResponse> actualizarUsuario(@PathVariable String id, @RequestBody CrearUsuarioDto user) {
         try {
-            user.setId(id);
-            User usuarioActualizado = userService.actualizarUsuario(user);
-            return new ResponseEntity<>(usuarioActualizado, HttpStatus.OK);
+            Optional<UsuarioResponse>usuarioActualizado = userService.actualizarUsuario(id,user);
+            return usuarioActualizado.map(ResponseEntity::ok)
+                    .orElseGet(()-> ResponseEntity.notFound().build());
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {

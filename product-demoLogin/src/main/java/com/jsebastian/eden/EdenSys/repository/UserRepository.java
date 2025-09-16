@@ -10,39 +10,47 @@ import com.jsebastian.eden.EdenSys.domain.Rol;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-    
+
     /**
      * Busca un usuario por su email
+     *
      * @param email el email del usuario
      * @return Optional<User> el usuario encontrado o vacío
      */
     Optional<User> findByEmail(String email);
-    
+
     /**
      * Busca un usuario por su cédula
+     *
      * @param cedula la cédula del usuario
      * @return Optional<User> el usuario encontrado o vacío
      */
-    Optional<User> findByCedula(String cedula);
-    
+    Optional<User> findByDocumentoIdentidad(String cedula);
+
     /**
      * Verifica si existe un usuario con el email especificado
+     *
      * @param email el email a verificar
      * @return true si existe, false en caso contrario
      */
     boolean existsByEmail(String email);
-    
+
     /**
      * Verifica si existe un usuario con la cédula especificada
+     *
      * @param cedula la cédula a verificar
      * @return true si existe, false en caso contrario
      */
-    boolean existsByCedula(String cedula);
-    
+    boolean existsByDocumentoIdentidad(String cedula);
+
     /**
      * Busca usuarios por rol
+     *
      * @param rol el rol a buscar
      * @return List<User> lista de usuarios con ese rol
      */
     List<User> findByRol(Rol rol);
+
+    Optional<User> findByCodigoActivacion(String codigo);
+
 }

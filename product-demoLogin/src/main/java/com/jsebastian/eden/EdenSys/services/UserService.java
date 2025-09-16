@@ -1,5 +1,6 @@
 package com.jsebastian.eden.EdenSys.services;
 
+import com.jsebastian.eden.EdenSys.Dtos.UsuarioResponse;
 import com.jsebastian.eden.EdenSys.domain.User;
 import com.jsebastian.eden.EdenSys.Dtos.CrearUsuarioDto;
 import com.jsebastian.eden.EdenSys.exceptions.ValueConflictException;
@@ -12,6 +13,8 @@ import java.util.Optional;
  */
 public interface UserService {
 
+
+
     /**
      * Guarda un nuevo usuario en la base de datos
      * @param user el usuario a guardar
@@ -20,12 +23,12 @@ public interface UserService {
     User guardarUsuario(User user);
 
     /**
-     * Crea un nuevo usuario usando un DTO (las validaciones se hacen en el controlador)
-     * @param crearUsuarioDto el DTO con los datos del usuario a crear
+     * Crea un nuevo usuario usando un DTO (las validaciones se hacen en el DTO al ser mapeadas)
+     * @param usuarioDTO el DTO con los datos del usuario a crear
      * @return el usuario creado con su ID generado
      * @throws ValueConflictException si el email ya existe
      */
-    User crearUsuario(CrearUsuarioDto crearUsuarioDto);
+    UsuarioResponse crearUsuario(CrearUsuarioDto usuarioDTO);// we gonna create a user catching a DTO that are requesting , and return a DTO that are resolving
 
     /**
      * Busca un usuario por su email
@@ -80,10 +83,21 @@ public interface UserService {
      */
     boolean existePorCedula(String cedula);
 
+   Optional<UsuarioResponse>actualizarUsuario(String id, CrearUsuarioDto usuarioDTO)throws ValueConflictException;
+
     /**
-     * Actualiza un usuario existente
-     * @param user el usuario con los datos actualizados
-     * @return el usuario actualizado
+     * Activa un usuario basado en el código de activación
+     * @param codigo el código de activación
+     * @return true si la activación fue exitosa, false en caso contrario
      */
-    User actualizarUsuario(User user);
+    boolean activarUsuario(String codigo);
+
+    /**
+     * Valida las credenciales del usuario y genera un token JWT
+     * @param email el email del usuario
+     * @param contrasena la contraseña del usuario
+     * @return el token JWT generado
+     * @throws IllegalArgumentException si las credenciales son inválidas
+     */
+    String validarCredencialesYGenerarToken(String email, String contrasena);
 }
