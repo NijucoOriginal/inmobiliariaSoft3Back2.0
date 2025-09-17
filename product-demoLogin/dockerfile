@@ -6,8 +6,9 @@ RUN apt-get update && apt-get install -y openjdk-21-jdk
 WORKDIR /app
 
 # Copiar wrapper y darle permisos
-COPY mvnw .
-COPY .mvn .mvn
+COPY product-demoLogin/mvnw .
+COPY product-demoLogin/.mvn .mvn
+
 RUN chmod +x mvnw
 
 # Copiar pom y descargar dependencias primero (cache build)
