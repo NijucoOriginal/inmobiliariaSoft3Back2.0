@@ -1,28 +1,30 @@
-FROM eclipse-temurin:21-jdk AS builder
+# Etapa de build
+FROM ubuntu:latest AS build
+
+RUN apt-get update && apt-get install -y openjdk-21-jdk
 
 WORKDIR /app
 
-# Copiar wrapper y configurar
+# Copiar wrapper y darle permisos
 COPY mvnw .
 COPY .mvn .mvn
 RUN chmod +x mvnw
 
-# Copiar pom y bajar dependencias primero
+# Copiar pom y descargar dependencias primero (cache build)
 COPY pom.xml .
 RUN ./mvnw dependency:go-offline -B
 
-# Copiar el resto del código y compilar
+# Copiar el código fuente y empaquetar
 COPY src src
 RUN ./mvnw clean package -DskipTests
 
-# Imagen final
+# Etapa final (imagen ligera)
 FROM eclipse-temurin:21-jre
 
 WORKDIR /app
-
-# Copiar el jar con nombre fijo
-COPY --from=builder /app/target/app.jar app.jar
-
 EXPOSE 9020
+
+# Copiar el JAR generado (ajusta el nombre según tu pom.xml)
+COPY --from=build /app/target/*.jar app.jar
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
