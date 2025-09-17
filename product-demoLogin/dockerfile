@@ -1,25 +1,27 @@
 FROM eclipse-temurin:21-jdk AS builder
 
-
 WORKDIR /app
 
-
-COPY . .
-
+# Copiar wrapper y configurar
 COPY mvnw .
-
 COPY .mvn .mvn
-
 RUN chmod +x mvnw
 
+# Copiar pom y bajar dependencias primero
+COPY pom.xml .
+RUN ./mvnw dependency:go-offline -B
 
+# Copiar el resto del código y compilar
+COPY src src
 RUN ./mvnw clean package -DskipTests
 
+# Imagen final
 FROM eclipse-temurin:21-jre
 
 WORKDIR /app
 
-COPY --from=builder /app/target/*.jar app.jar
+# Copiar el jar con nombre fijo
+COPY --from=builder /app/target/app.jar app.jar
 
 EXPOSE 9020
 
