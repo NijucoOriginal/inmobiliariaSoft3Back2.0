@@ -1,33 +1,23 @@
-# ========================
-# 1. Etapa de construcción
-# ========================
-FROM maven:3.9.6-eclipse-temurin-21 AS build
+# Imagen base con Java 21 y Maven
+FROM maven:3.9.6-eclipse-temurin-21 AS builder
+
 WORKDIR /app
 
-# Copiar archivos de Maven
+# Copiar pom.xml y descargar dependencias
 COPY pom.xml .
-COPY .mvn .mvn
 COPY mvnw .
-COPY mvnw.cmd .
-
-# Descargar dependencias
+COPY .mvn .mvn
 RUN ./mvnw dependency:go-offline -B
 
-# Copiar el código fuente y compilar
+# Copiar código fuente y compilar
 COPY src src
 RUN ./mvnw clean package -DskipTests
 
-# =========================
-# 2. Etapa de ejecución
-# =========================
-FROM eclipse-temurin:21-jdk
+# Imagen final para ejecutar
+FROM eclipse-temurin:21-jre
+
 WORKDIR /app
+COPY --from=builder /app/target/*.jar app.jar
 
-# Copiar el JAR desde la etapa de build
-COPY --from=build /app/target/*.jar app.jar
-
-# Exponer puerto (Render usa variable $PORT)
 EXPOSE 8080
-
-# Ejecutar la aplicación
-ENTRYPOINT ["java","-jar","app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
