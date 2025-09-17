@@ -15,7 +15,7 @@ COPY pom.xml .
 RUN ./mvnw dependency:go-offline -B
 
 # Copiar el código fuente y empaquetar
-COPY src src
+COPY src product-demoLogin/src
 RUN ./mvnw clean package -DskipTests
 
 # Etapa final (imagen ligera)
