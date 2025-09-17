@@ -11,11 +11,12 @@ COPY .mvn .mvn
 RUN chmod +x mvnw
 
 # Copiar pom y descargar dependencias primero (cache build)
-COPY pom.xml .
+COPY product-demoLogin/pom.xml .
 RUN ./mvnw dependency:go-offline -B
 
 # Copiar el código fuente y empaquetar
-COPY src product-demoLogin/src
+COPY product-demoLogin/src src
+
 RUN ./mvnw clean package -DskipTests
 
 # Etapa final (imagen ligera)
