@@ -23,7 +23,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/usuarios")
-@CrossOrigin("https://68ce0dd7b370fd0008c9e0d9--singular-belekoy-a36f07.netlify.app/")
+@CrossOrigin("https://singular-belekoy-a36f07.netlify.app/")
 
 public class UserController {
 
