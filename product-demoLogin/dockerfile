@@ -27,6 +27,6 @@ WORKDIR /app
 EXPOSE 9020
 
 # Copiar el JAR generado (ajusta el nombre según tu pom.xml)
-COPY --from=build /app/target/*.jar app.jar
+COPY --from=builder /app/target/*SNAPSHOT.jar app.jar
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
