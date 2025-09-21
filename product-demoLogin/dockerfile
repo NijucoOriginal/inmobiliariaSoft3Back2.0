@@ -1,24 +1,32 @@
-# Etapa de construcción
-FROM maven:3.9.6-eclipse-temurin-21 AS builder
+# Etapa de build
+FROM ubuntu:latest AS build
+
+RUN apt-get update && apt-get install -y openjdk-21-jdk
 
 WORKDIR /app
 
-# Copiar archivos necesarios para compilar
-COPY pom.xml .
-COPY mvnw .
-COPY .mvn .mvn
-COPY src ./src
+# Copiar wrapper y darle permisos
+COPY product-demoLogin/mvnw .
+COPY product-demoLogin/.mvn .mvn
+
+RUN chmod +x mvnw
+
+# Copiar pom y descargar dependencias primero (cache build)
+COPY product-demoLogin/pom.xml .
+RUN ./mvnw dependency:go-offline -B
+
+# Copiar el código fuente y empaquetar
+COPY product-demoLogin/src src
 
 RUN ./mvnw clean package -DskipTests
 
-# Etapa de ejecución
+# Etapa final (imagen ligera)
 FROM eclipse-temurin:21-jre
 
 WORKDIR /app
+EXPOSE 9020
 
+# Copiar el JAR generado (ajusta el nombre según tu pom.xml)
 COPY --from=builder /app/target/*SNAPSHOT.jar app.jar
 
-EXPOSE 8080
-
 ENTRYPOINT ["java", "-jar", "app.jar"]
-
