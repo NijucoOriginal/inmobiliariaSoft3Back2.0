@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
-@CrossOrigin("https://singular-belekoy-a36f07.netlify.app/")
+@CrossOrigin("https://singular-belekoy-a36f07.netlify.app")
 public class AuthController {
 
     private final UserService userService;
