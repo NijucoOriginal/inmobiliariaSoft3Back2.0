@@ -7,6 +7,7 @@ import com.jsebastian.eden.EdenSys.Dtos.CrearUsuarioDto;
 import com.jsebastian.eden.EdenSys.exceptions.ValueConflictException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,20 +24,24 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/usuarios")
-@CrossOrigin("http://localhost:4200")
-
+@CrossOrigin("${frontend.url}")
 public class UserController {
 
+    @Value("${frontend.url}")
+    private String frontendUrl;
+
+    @Value("${frontend.local.url}")
+    private String frontendLocalUrl;
 
     private final UserService userService;
 
     /**
-     * Crea un nuevo usuario usando DTO con validaciones Jakarta
+* Crea un nuevo usuario usando DTO con validaciones Jakarta
      * @param crearUsuarioDto el DTO con los datos del usuario a crear
      * @return ResponseEntity con el usuario creado
      */
     @PostMapping
-    public ResponseEntity<?> crearUsuario(@Valid @RequestBody CrearUsuarioDto crearUsuarioDto) {
+    public ResponseEntity<?> crearUsuario(@Valid @RequestBody CrearUsuarioDto crearUsuarioDto){
         try {
             UsuarioResponse response = userService.crearUsuario(crearUsuarioDto);
             return ResponseEntity.ok(response);
@@ -109,7 +114,7 @@ public class UserController {
      * Actualiza un usuario existente
      * @param id el ID del usuario a actualizar
      * @param user los nuevos datos del usuario
-     * @return ResponseEntity con el usuario actualizado
+* @return ResponseEntity con el usuario actualizado
      */
     @PutMapping("/{id}")
     public ResponseEntity<UsuarioResponse> actualizarUsuario(@PathVariable String id, @RequestBody CrearUsuarioDto user) {
