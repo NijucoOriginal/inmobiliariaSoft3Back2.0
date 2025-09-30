@@ -1,4 +1,4 @@
-package com.jsebastian.eden.EdenSys.services;
+package com.jsebastian.eden.EdenSys.services.interfaces;
 
 import com.jsebastian.eden.EdenSys.Dtos.UsuarioResponse;
 import com.jsebastian.eden.EdenSys.domain.User;

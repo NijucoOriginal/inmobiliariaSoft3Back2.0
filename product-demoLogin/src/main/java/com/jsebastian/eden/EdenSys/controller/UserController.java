@@ -2,11 +2,10 @@ package com.jsebastian.eden.EdenSys.controller;
 
 import com.jsebastian.eden.EdenSys.Dtos.UsuarioResponse;
 import com.jsebastian.eden.EdenSys.domain.User;
-import com.jsebastian.eden.EdenSys.services.UserService;
+import com.jsebastian.eden.EdenSys.services.interfaces.UserService;
 import com.jsebastian.eden.EdenSys.Dtos.CrearUsuarioDto;
 import com.jsebastian.eden.EdenSys.exceptions.ValueConflictException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +23,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/usuarios")
-@CrossOrigin("${frontend.url}")
 public class UserController {
 
     @Value("${frontend.url}")

@@ -1,30 +1,42 @@
 package com.jsebastian.eden.EdenSys.domain;
 
-import jakarta.validation.constraints.Min;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import lombok.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
-@NotBlank
+@Entity
+@Table(name = "inmueble")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class Inmueble {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     private String departamento;
 
+    @ManyToOne
+    @JoinColumn(name = "ubicacion_id")
     private Ubicacion ubicacion;
 
+    @Enumerated(EnumType.STRING)
     private TipoNegocio tipoNegocio;
 
+    @ManyToOne
+    @JoinColumn(name = "agente_asociado_id")
     private AgenteInmobiliario agenteAsociado;
 
-    private ArrayList<DocumentoImportante> documentosImportantes;
+    @OneToMany(mappedBy = "inmueble", cascade = CascadeType.ALL)
+    private List<DocumentoImportante> documentosImportantes;
 
+    @Enumerated(EnumType.STRING)
     private TipoInmueble tipo;
 
     @Positive
@@ -38,22 +50,30 @@ public class Inmueble {
 
     private String descripcion;
 
+    @Enumerated(EnumType.STRING)
     private EstadoInmueble estado;
+
+    @Enumerated(EnumType.STRING)
+    private EstadoPosteoInmueble estadoPosteoInmueble;
 
     @Positive
     private double precio;
 
+    @Enumerated(EnumType.STRING)
     private EstadoTransaccion estadoTransa;
 
     private String ciudad;
 
     private int codigoInmueble;
 
-    private ArrayList<HistorialInmueble> historial;
+    @OneToMany(mappedBy = "inmueble", cascade = CascadeType.ALL)
+    private List<HistorialInmueble> historial;
 
+    @ManyToOne
+    @JoinColumn(name = "asesor_legal_id")
     private AsesorLegal asesorLegal;
 
-    @Min(1)
+    @Positive
     private int cantidadParqueaderos;
 
     private String telfonoContacto;
@@ -62,6 +82,10 @@ public class Inmueble {
 
     private String correoContacto;
 
-    private ArrayList<Imagen> imagenes;
+    @OneToMany(mappedBy = "inmueble", cascade = CascadeType.ALL)
+    private List<Imagen> imagenes;
 
+    @ManyToOne
+    @JoinColumn(name = "propietario_id")
+    private Cliente propietario;
 }

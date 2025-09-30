@@ -3,7 +3,7 @@ package com.jsebastian.eden.EdenSys.controller;
 import com.jsebastian.eden.EdenSys.Dtos.RegisterRequest;
 import com.jsebastian.eden.EdenSys.Dtos.LoginRequest;
 import com.jsebastian.eden.EdenSys.Dtos.AuthResponse;
-import com.jsebastian.eden.EdenSys.services.UserService;
+import com.jsebastian.eden.EdenSys.services.interfaces.UserService;
 import com.jsebastian.eden.EdenSys.services.JwtService;
 import com.jsebastian.eden.EdenSys.exceptions.ValueConflictException;
 import lombok.RequiredArgsConstructor;
@@ -15,10 +15,9 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
-@CrossOrigin(origins = {"${frontend.url}","http://localhost:4200"})
 public class AuthController {
 
-@Value("${frontend.url}")
+    @Value("${frontend.url}")
     private String frontendUrl;
 
     private final UserService userService;
