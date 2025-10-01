@@ -2,6 +2,7 @@ package com.jsebastian.eden.EdenSys.services;
 
 
 import com.jsebastian.eden.EdenSys.domain.User;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -68,5 +69,14 @@ public class JwtService {
                 .getBody()
                 .getExpiration();
         return expiration.before(new Date());
+    }
+
+    public Date obtenerFechaExpiracion(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+        return claims.getExpiration();
     }
 }
