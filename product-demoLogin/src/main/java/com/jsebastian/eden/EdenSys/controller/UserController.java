@@ -190,9 +190,14 @@ public class UserController {
     }
 
     @PutMapping("/desvincular/{email}")
-    public ResponseEntity<UsuarioResponse> desvincularUsuario(@PathVariable String email) {
-        Optional<UsuarioResponse> usuario = userService.desvincularUsuario(email);
-        return usuario.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<String> desvincularUsuario(@PathVariable String email) {
+        userService.desvincularUsuario(email);
+        return ResponseEntity.ok("Usuario desvinculado correctamente");
+    }
+
+    @PutMapping("/desvincular")
+    public ResponseEntity<String> desvincularUsuarioPrueba() {
+        return ResponseEntity.ok("Los Cors son una mierda");
     }
 
 }

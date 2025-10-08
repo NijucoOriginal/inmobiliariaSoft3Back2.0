@@ -190,12 +190,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<UsuarioResponse> desvincularUsuario(String email) {
+    public Optional<String> desvincularUsuario(String email) {
         return userRepository.findByEmail(email).map(usuarioExistente -> {
+
+            if(usuarioExistente.getRol().equals(Rol.DESVINCULADO))
+            {
+                return "El usuario ya se encuentra desvinculado";
+            }
             usuarioExistente.setRol(Rol.DESVINCULADO);
 
-            User guardado=userRepository.save(usuarioExistente);
-            return userMapper.toUsuarioResponse(guardado);
+            userRepository.save(usuarioExistente);
+            return "Usuario eliminado correctamente";
         });
     }
 
@@ -312,16 +317,24 @@ public class UserServiceImpl implements UserService {
         if (usuarioOptional.isPresent()) {
             User usuario = usuarioOptional.get();
             System.out.println("Usuario encontrado: " + usuario.getEmail());
-
-            // Verificar la contraseña
-            if (passwordEncoder.matches(contrasena, usuario.getContrasena())) {
-                // Generar el token JWT
-                System.out.println("Contraseña válida, token generado.");
-                return jwtService.generateToken(usuario);
-            } else {
-                throw new IllegalArgumentException("Contraseña incorrecta.");
+            if(!usuario.getRol().equals(Rol.DESVINCULADO))
+            {
+                // Verificar la contraseña
+                if (passwordEncoder.matches(contrasena, usuario.getContrasena())) {
+                    // Generar el token JWT
+                    System.out.println("Contraseña válida, token generado.");
+                    return jwtService.generateToken(usuario);
+                } else {
+                    throw new IllegalArgumentException("Contraseña incorrecta.");
+                }
             }
-        } else {
+            else
+            {
+                throw new ValueConflictException("El usuario ya se encuentra desvinculado");
+            }
+        }
+        else
+        {
             throw new IllegalArgumentException("Usuario no encontrado con el email proporcionado.");
         }
     }

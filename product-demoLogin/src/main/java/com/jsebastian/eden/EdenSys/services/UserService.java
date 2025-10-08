@@ -70,7 +70,7 @@ public interface UserService {
     void eliminarUsuarioPorEmail(String email);
 
 
-    Optional<UsuarioResponse> desvincularUsuario(String email);
+    Optional<String> desvincularUsuario(String email);
 
     /**
      * Verifica si existe un usuario con el email especificado
