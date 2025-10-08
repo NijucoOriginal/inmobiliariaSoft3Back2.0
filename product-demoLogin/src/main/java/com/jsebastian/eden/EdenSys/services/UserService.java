@@ -69,12 +69,17 @@ public interface UserService {
      */
     void eliminarUsuarioPorEmail(String email);
 
+
+    Optional<UsuarioResponse> desvincularUsuario(String email);
+
     /**
      * Verifica si existe un usuario con el email especificado
      * @param email el email a verificar
      * @return true si existe, false en caso contrario
      */
     boolean existePorEmail(String email);
+
+    boolean usuarioRegistradoPreviamente(String email);
 
     /**
      * Verifica si existe un usuario con la cédula especificada
@@ -84,6 +89,8 @@ public interface UserService {
     boolean existePorCedula(String cedula);
 
    Optional<UsuarioResponse>actualizarUsuario(String id, CrearUsuarioDto usuarioDTO)throws ValueConflictException;
+
+    Optional<UsuarioResponse> actualizarUsuarioEmail(String email, CrearUsuarioDto user);
 
     /**
      * Activa un usuario basado en el código de activación

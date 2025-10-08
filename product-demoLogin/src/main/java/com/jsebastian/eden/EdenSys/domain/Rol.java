@@ -6,5 +6,5 @@ public enum Rol {
     AGENTE,
     CLIENTE,
     GERENTE,
-    PENDIENTE
+    DESVINCULADO, PENDIENTE
 }

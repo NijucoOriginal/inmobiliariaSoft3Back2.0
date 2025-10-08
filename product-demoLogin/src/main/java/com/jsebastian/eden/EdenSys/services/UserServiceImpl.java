@@ -71,7 +71,15 @@ public class UserServiceImpl implements UserService {
     public UsuarioResponse crearUsuario(CrearUsuarioDto crearUsuarioDto)  {
 
         String emailNormalizado = crearUsuarioDto.email().trim().toLowerCase();
-        if (existePorEmail(emailNormalizado)) {
+        /*if (existePorEmail(emailNormalizado))
+        {
+            throw new ValueConflictException("Ya existe un usuario con este email: " + emailNormalizado);
+        }
+
+         */
+
+        if(usuarioRegistradoPreviamente(emailNormalizado))
+        {
             throw new ValueConflictException("Ya existe un usuario con este email: " + emailNormalizado);
         }
 
@@ -181,6 +189,16 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    public Optional<UsuarioResponse> desvincularUsuario(String email) {
+        return userRepository.findByEmail(email).map(usuarioExistente -> {
+            usuarioExistente.setRol(Rol.DESVINCULADO);
+
+            User guardado=userRepository.save(usuarioExistente);
+            return userMapper.toUsuarioResponse(guardado);
+        });
+    }
+
     /**
      * Verifica si existe un usuario con el email especificado
      * @param email el email a verificar
@@ -190,6 +208,27 @@ public class UserServiceImpl implements UserService {
     public boolean existePorEmail(String email) {
         return userRepository.existsByEmail(email);
     }
+
+    @Override
+    public boolean usuarioRegistradoPreviamente(String email) {
+        Optional<User> usuario = userRepository.findByEmail(email);
+        if(usuario.isPresent())
+        {
+            if(usuario.get().getRol().equals(Rol.DESVINCULADO))
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+        else
+        {
+            return false;
+        }
+    }
+
 
     /**
      * Verifica si existe un usuario con la cédula especificada
@@ -209,6 +248,22 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<UsuarioResponse> actualizarUsuario(String id,CrearUsuarioDto user) {
         return Optional.empty();
+    }
+
+    @Override
+    public Optional<UsuarioResponse> actualizarUsuarioEmail(String email, CrearUsuarioDto user) {
+        /*return userRepository.findByEmail(email).map(usuarioExistente -> {
+            usuarioExistente.setNombre(user.nombre());
+            usuarioExistente.setTelefono(user.telefono());
+            usuarioExistente.setApellido(user.apellido());
+            usuarioExistente.setDocumentoIdentidad(user.documentoIdentidad());
+            // No actualizamos el correo si quieres mantenerlo fijo
+            return userRepository.save(usuarioExistente);
+        });
+
+         */
+        return  Optional.empty();
+
     }
 
     /**

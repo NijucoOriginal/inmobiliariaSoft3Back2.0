@@ -124,6 +124,19 @@ public class UserController {
         }
     }
 
+    @PutMapping("/{email}")
+    public ResponseEntity<UsuarioResponse> actualizarUsuarioPorEmail(@PathVariable String email, @RequestBody CrearUsuarioDto user) {
+        try {
+            Optional<UsuarioResponse>usuarioActualizado = userService.actualizarUsuarioEmail(email,user);
+            return usuarioActualizado.map(ResponseEntity::ok)
+                    .orElseGet(()-> ResponseEntity.notFound().build());
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
     /**
      * Elimina un usuario por su ID
      * @param id el ID del usuario a eliminar
@@ -175,4 +188,11 @@ public class UserController {
         boolean existe = userService.existePorCedula(cedula);
         return new ResponseEntity<>(existe, HttpStatus.OK);
     }
+
+    @PutMapping("/desvincular/{email}")
+    public ResponseEntity<UsuarioResponse> desvincularUsuario(@PathVariable String email) {
+        Optional<UsuarioResponse> usuario = userService.desvincularUsuario(email);
+        return usuario.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
 }
