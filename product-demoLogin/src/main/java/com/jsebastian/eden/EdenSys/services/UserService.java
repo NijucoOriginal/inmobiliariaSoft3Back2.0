@@ -90,7 +90,7 @@ public interface UserService {
 
    Optional<UsuarioResponse>actualizarUsuario(String id, CrearUsuarioDto usuarioDTO)throws ValueConflictException;
 
-    Optional<UsuarioResponse> actualizarUsuarioEmail(String email, CrearUsuarioDto user);
+    Optional<User> actualizarUsuarioEmail(String email, CrearUsuarioDto user);
 
     /**
      * Activa un usuario basado en el código de activación
@@ -107,4 +107,6 @@ public interface UserService {
      * @throws IllegalArgumentException si las credenciales son inválidas
      */
     String validarCredencialesYGenerarToken(String email, String contrasena);
+
+    String generarToken(User usuario);
 }

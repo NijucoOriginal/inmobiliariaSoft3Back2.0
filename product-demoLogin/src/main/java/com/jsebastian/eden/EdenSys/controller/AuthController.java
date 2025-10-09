@@ -3,6 +3,7 @@ package com.jsebastian.eden.EdenSys.controller;
 import com.jsebastian.eden.EdenSys.Dtos.RegisterRequest;
 import com.jsebastian.eden.EdenSys.Dtos.LoginRequest;
 import com.jsebastian.eden.EdenSys.Dtos.AuthResponse;
+import com.jsebastian.eden.EdenSys.security.JwtAuthenticationFilter;
 import com.jsebastian.eden.EdenSys.services.UserService;
 import com.jsebastian.eden.EdenSys.services.JwtService;
 import com.jsebastian.eden.EdenSys.exceptions.ValueConflictException;
@@ -46,6 +47,7 @@ public class AuthController {
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
         try {
             String token = userService.validarCredencialesYGenerarToken(request.email(), request.contrasena());
+
             return ResponseEntity.ok(new AuthResponse(token));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new AuthResponse(e.getMessage()));

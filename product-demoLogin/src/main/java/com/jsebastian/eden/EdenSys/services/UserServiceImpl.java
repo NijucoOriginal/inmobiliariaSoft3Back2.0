@@ -256,18 +256,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<UsuarioResponse> actualizarUsuarioEmail(String email, CrearUsuarioDto user) {
-        /*return userRepository.findByEmail(email).map(usuarioExistente -> {
+    public Optional<User> actualizarUsuarioEmail(String email, CrearUsuarioDto user) {
+        return userRepository.findByEmail(email).map(usuarioExistente -> {
             usuarioExistente.setNombre(user.nombre());
             usuarioExistente.setTelefono(user.telefono());
             usuarioExistente.setApellido(user.apellido());
             usuarioExistente.setDocumentoIdentidad(user.documentoIdentidad());
+            userRepository.save(usuarioExistente);
             // No actualizamos el correo si quieres mantenerlo fijo
             return userRepository.save(usuarioExistente);
         });
-
-         */
-        return  Optional.empty();
+       // return  Optional.empty();
 
     }
 
@@ -323,7 +322,7 @@ public class UserServiceImpl implements UserService {
                 if (passwordEncoder.matches(contrasena, usuario.getContrasena())) {
                     // Generar el token JWT
                     System.out.println("Contraseña válida, token generado.");
-                    return jwtService.generateToken(usuario);
+                    return generarToken(usuario);
                 } else {
                     throw new IllegalArgumentException("Contraseña incorrecta.");
                 }
@@ -337,5 +336,10 @@ public class UserServiceImpl implements UserService {
         {
             throw new IllegalArgumentException("Usuario no encontrado con el email proporcionado.");
         }
+    }
+
+    @Override
+    public String generarToken(User usuario) {
+        return jwtService.generateToken(usuario);
     }
 }

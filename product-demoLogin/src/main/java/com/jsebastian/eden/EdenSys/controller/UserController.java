@@ -1,5 +1,6 @@
 package com.jsebastian.eden.EdenSys.controller;
 
+import com.jsebastian.eden.EdenSys.Dtos.AuthResponse;
 import com.jsebastian.eden.EdenSys.Dtos.UsuarioResponse;
 import com.jsebastian.eden.EdenSys.domain.User;
 import com.jsebastian.eden.EdenSys.services.UserService;
@@ -124,18 +125,30 @@ public class UserController {
         }
     }
 
-    @PutMapping("/{email}")
-    public ResponseEntity<UsuarioResponse> actualizarUsuarioPorEmail(@PathVariable String email, @RequestBody CrearUsuarioDto user) {
+    /*@PutMapping("/actualizar/{email}")
+    public ResponseEntity<AuthResponse> actualizarUsuarioPorEmail(@PathVariable String email, @RequestBody CrearUsuarioDto user) {
         try {
-            Optional<UsuarioResponse>usuarioActualizado = userService.actualizarUsuarioEmail(email,user);
-            return usuarioActualizado.map(ResponseEntity::ok)
-                    .orElseGet(()-> ResponseEntity.notFound().build());
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            Optional<User> usuarioActualizado = userService.actualizarUsuarioEmail(email,user);
+            User usuario = usuarioActualizado.get();
+            String tokenNuevo=userService.generarToken(usuario);
+            return ResponseEntity.ok(new AuthResponse(tokenNuevo));
         } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new AuthResponse(e.getMessage()));
         }
     }
+
+     */
+
+    @PutMapping("/actualizar/{email}")
+    public ResponseEntity<String> actualizarUsuarioPorEmail(@PathVariable String email, @RequestBody CrearUsuarioDto user) {
+        try {
+            Optional<User> usuarioActualizado = userService.actualizarUsuarioEmail(email,user);
+            return ResponseEntity.ok("Usuario actualizado correctamente. Nuevo token: ");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Error: " + e.getMessage());
+        }
+    }
+
 
     /**
      * Elimina un usuario por su ID
@@ -195,9 +208,5 @@ public class UserController {
         return ResponseEntity.ok("Usuario desvinculado correctamente");
     }
 
-    @PutMapping("/desvincular")
-    public ResponseEntity<String> desvincularUsuarioPrueba() {
-        return ResponseEntity.ok("Los Cors son una mierda");
-    }
 
 }
