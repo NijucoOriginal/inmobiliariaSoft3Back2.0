@@ -258,16 +258,27 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<User> actualizarUsuarioEmail(String email, CrearUsuarioDto user) {
         return userRepository.findByEmail(email).map(usuarioExistente -> {
-            usuarioExistente.setNombre(user.nombre());
-            usuarioExistente.setTelefono(user.telefono());
-            usuarioExistente.setApellido(user.apellido());
-            usuarioExistente.setDocumentoIdentidad(user.documentoIdentidad());
+
+            if(!user.nombre().equals(usuarioExistente.getNombre()))
+            {
+                usuarioExistente.setNombre(user.nombre());
+            }
+            if (!user.apellido().equals(usuarioExistente.getApellido()))
+            {
+                usuarioExistente.setApellido(user.apellido());
+            }
+            if(!user.telefono().equals(usuarioExistente.getTelefono()))
+            {
+                usuarioExistente.setTelefono(user.telefono());
+            }
+            if(!user.documentoIdentidad().equals(usuarioExistente.getDocumentoIdentidad()))
+            {
+                usuarioExistente.setDocumentoIdentidad(user.documentoIdentidad());
+            }
             userRepository.save(usuarioExistente);
             // No actualizamos el correo si quieres mantenerlo fijo
             return userRepository.save(usuarioExistente);
         });
-       // return  Optional.empty();
-
     }
 
     /**
