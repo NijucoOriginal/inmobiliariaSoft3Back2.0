@@ -29,6 +29,10 @@ public class WebConfig {
                         .allowedOrigins(frontendUrl, frontendLocalUrl)
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowCredentials(true);
+                registry.addMapping("/api/usuarios/**")
+                        .allowedOrigins(frontendUrl, frontendLocalUrl)
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                        .allowCredentials(true);
             }
         };
     }
