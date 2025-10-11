@@ -25,11 +25,7 @@ public class WebConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/api/auth/**")
-                        .allowedOrigins(frontendUrl, frontendLocalUrl)
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                        .allowCredentials(true);
-                registry.addMapping("/api/usuarios/**")
+                registry.addMapping("/api/**")
                         .allowedOrigins(frontendUrl, frontendLocalUrl)
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowCredentials(true);
@@ -37,4 +33,3 @@ public class WebConfig {
         };
     }
 }
-
