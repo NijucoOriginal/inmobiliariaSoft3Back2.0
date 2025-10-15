@@ -140,12 +140,12 @@ public class UserController {
      */
 
     @PutMapping("/actualizar/{email}")
-    public ResponseEntity<String> actualizarUsuarioPorEmail(@PathVariable String email, @RequestBody CrearUsuarioDto user) {
+    public ResponseEntity<AuthResponse> actualizarUsuarioPorEmail(@PathVariable String email, @RequestBody CrearUsuarioDto user) {
         try {
-            Optional<User> usuarioActualizado = userService.actualizarUsuarioEmail(email,user);
-            return ResponseEntity.ok("Usuario actualizado correctamente. Nuevo token: ");
+            String usuarioActualizado = userService.actualizarUsuarioEmail(email,user);
+            return ResponseEntity.ok(new AuthResponse(usuarioActualizado));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Error: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new AuthResponse(e.getMessage()));
         }
     }
 

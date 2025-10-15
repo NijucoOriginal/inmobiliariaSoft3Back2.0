@@ -1,6 +1,7 @@
 package com.jsebastian.eden.EdenSys.services;
 
 import ch.qos.logback.classic.Logger;
+import com.jsebastian.eden.EdenSys.Dtos.AuthResponse;
 import com.jsebastian.eden.EdenSys.Dtos.UsuarioResponse;
 import com.jsebastian.eden.EdenSys.domain.Rol;
 import com.jsebastian.eden.EdenSys.domain.User;
@@ -255,8 +256,8 @@ public class UserServiceImpl implements UserService {
         return Optional.empty();
     }
 
-    @Override
-    public Optional<User> actualizarUsuarioEmail(String email, CrearUsuarioDto user) {
+    /*@Override
+    public Optional<String> actualizarUsuarioEmail(String email, CrearUsuarioDto user) {
         return userRepository.findByEmail(email).map(usuarioExistente -> {
 
             if(!user.nombre().equals(usuarioExistente.getNombre()))
@@ -276,10 +277,34 @@ public class UserServiceImpl implements UserService {
                 usuarioExistente.setDocumentoIdentidad(user.documentoIdentidad());
             }
             userRepository.save(usuarioExistente);
-            // No actualizamos el correo si quieres mantenerlo fijo
-            return userRepository.save(usuarioExistente);
+            return generarToken(userRepository.save(usuarioExistente));
         });
     }
+
+     */
+
+    @Override
+    public String actualizarUsuarioEmail(String email, CrearUsuarioDto user) {
+        var usuarioExistente = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con el email: " + email));
+
+        if (!user.nombre().equals(usuarioExistente.getNombre())) {
+            usuarioExistente.setNombre(user.nombre());
+        }
+        if (!user.apellido().equals(usuarioExistente.getApellido())) {
+            usuarioExistente.setApellido(user.apellido());
+        }
+        if (!user.telefono().equals(usuarioExistente.getTelefono())) {
+            usuarioExistente.setTelefono(user.telefono());
+        }
+        if (!user.documentoIdentidad().equals(usuarioExistente.getDocumentoIdentidad())) {
+            usuarioExistente.setDocumentoIdentidad(user.documentoIdentidad());
+        }
+
+        var usuarioActualizado = userRepository.save(usuarioExistente);
+        return generarToken(usuarioActualizado);
+    }
+
 
     /**
      * Activa un usuario basado en el código de activación

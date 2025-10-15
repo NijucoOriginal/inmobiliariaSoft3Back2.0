@@ -90,7 +90,7 @@ public interface UserService {
 
    Optional<UsuarioResponse>actualizarUsuario(String id, CrearUsuarioDto usuarioDTO)throws ValueConflictException;
 
-    Optional<User> actualizarUsuarioEmail(String email, CrearUsuarioDto user);
+    String actualizarUsuarioEmail(String email, CrearUsuarioDto user);
 
     /**
      * Activa un usuario basado en el código de activación
