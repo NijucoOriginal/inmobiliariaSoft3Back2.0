@@ -47,7 +47,6 @@ public class AuthController {
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
         try {
             String token = userService.validarCredencialesYGenerarToken(request.email(), request.contrasena());
-
             return ResponseEntity.ok(new AuthResponse(token));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new AuthResponse(e.getMessage()));

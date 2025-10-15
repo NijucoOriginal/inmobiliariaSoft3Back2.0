@@ -340,6 +340,7 @@ public class UserServiceImpl implements UserService {
             }
             else
             {
+                System.out.print("El usuario ya se encuentra desvinculado");
                 throw new ValueConflictException("El usuario ya se encuentra desvinculado");
             }
         }
