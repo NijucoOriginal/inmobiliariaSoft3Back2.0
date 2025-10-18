@@ -7,7 +7,7 @@ import com.jsebastian.eden.EdenSys.services.UserService;
 import com.jsebastian.eden.EdenSys.Dtos.CrearUsuarioDto;
 import com.jsebastian.eden.EdenSys.exceptions.ValueConflictException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,10 +24,14 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/usuarios")
-//@CrossOrigin("https://singular-belekoy-a36f07.netlify.app")
-@CrossOrigin("http://localhost:4200/")
 public class UserController {
 
+
+    @Value("${frontend.url}")
+    private String frontendUrl;
+
+    @Value("${frontend.local.url}")
+    private String frontendLocalUrl;
 
     private final UserService userService;
 
