@@ -3,25 +3,22 @@ package com.jsebastian.eden.EdenSys.controller;
 import com.jsebastian.eden.EdenSys.Dtos.RegisterRequest;
 import com.jsebastian.eden.EdenSys.Dtos.LoginRequest;
 import com.jsebastian.eden.EdenSys.Dtos.AuthResponse;
+import com.jsebastian.eden.EdenSys.security.JwtAuthenticationFilter;
 import com.jsebastian.eden.EdenSys.services.UserService;
 import com.jsebastian.eden.EdenSys.services.JwtService;
 import com.jsebastian.eden.EdenSys.exceptions.ValueConflictException;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
+//@CrossOrigin("https://singular-belekoy-a36f07.netlify.app")
+@CrossOrigin("http://localhost:4200/")
 public class AuthController {
-
-    @Value("${frontend.url}")
-    private String frontendUrl;
-
-    @Value("${frontend.local.url}")
-    private String frontendLocalUrl;
 
     private final UserService userService;
     private final JwtService jwtService;
