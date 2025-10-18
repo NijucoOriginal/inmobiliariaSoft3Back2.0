@@ -1,0 +1,57 @@
+package com.jsebastian.eden.EdenSys.repository;
+
+import com.jsebastian.eden.EdenSys.domain.Inmueble;
+import com.jsebastian.eden.EdenSys.domain.TipoNegocio;
+import com.jsebastian.eden.EdenSys.domain.EstadoInmueble;
+import com.jsebastian.eden.EdenSys.domain.AgenteInmobiliario;
+import com.jsebastian.eden.EdenSys.domain.TipoInmueble;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Optional;
+
+@Repository
+public interface InmuebleRepository extends JpaRepository<Inmueble, Long> {
+
+    /**
+     * Busca un inmueble por su código único
+     */
+    Optional<Inmueble> findByCodigoInmueble(int codigoInmueble);
+
+    /**
+     * Verifica si existe un inmueble con el código especificado
+     */
+    boolean existsByCodigoInmueble(int codigoInmueble);
+
+    /**
+     * Busca inmuebles por ciudad
+     */
+    List<Inmueble> findByCiudad(String ciudad);
+
+    /**
+     * Busca inmuebles por tipo de negocio
+     */
+    List<Inmueble> findByTipoNegocio(TipoNegocio tipoNegocio);
+
+    /**
+     * Busca inmuebles por estado
+     */
+    List<Inmueble> findByEstado(EstadoInmueble estado);
+
+    /**
+     * Busca inmuebles por agente asociado
+     */
+    List<Inmueble> findByAgenteAsociado(AgenteInmobiliario agenteAsociado);
+
+    /**
+     * Busca inmuebles por tipo
+     */
+    List<Inmueble> findByTipo(TipoInmueble tipo);
+
+    /**
+     * Busca inmuebles en un rango de precio
+     */
+    List<Inmueble> findByPrecioBetween(double min, double max);
+}
+

@@ -11,6 +11,7 @@ import com.jsebastian.eden.EdenSys.mappers.UserMapper;
 import com.jsebastian.eden.EdenSys.exceptions.ValueConflictException;
 // API DE MENSAJES
 
+import com.jsebastian.eden.EdenSys.services.interfaces.UserService;
 import com.sendgrid.*;
 
 import com.sendgrid.helpers.mail.objects.Email;
