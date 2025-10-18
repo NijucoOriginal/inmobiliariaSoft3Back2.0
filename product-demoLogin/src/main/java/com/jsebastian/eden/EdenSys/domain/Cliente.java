@@ -1,19 +1,28 @@
 package com.jsebastian.eden.EdenSys.domain;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 
-import java.util.ArrayList;
+import java.util.List;
 
 
 @NotEmpty
 @NotBlank
-@Getter
-@Setter
+@Entity
 public class Cliente extends Persona {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    private ArrayList<Inmueble> inmublesPropios;
+    @OneToMany(mappedBy = "propietario")
+    private List<Inmueble> inmueblesPropios;
 
-    private ArrayList<DocumentoImportante> documentsAdjuntos;
+    @OneToMany(mappedBy = "cliente")
+    private List<DocumentoImportante> documentsAdjuntos;
 }
