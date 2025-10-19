@@ -29,5 +29,4 @@ public class Ubicacion {
     @Min(-180)
     @Max(180)
     private int longitud;
-    private String descripcion;
 }

@@ -21,10 +21,8 @@ public class Imagen {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String nombre;
     private String url;
     private String descripcion;
-    private String codigoImagen;
     
     @ManyToOne
     @JoinColumn(name = "inmueble_id")

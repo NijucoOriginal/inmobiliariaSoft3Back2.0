@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import lombok.*;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +21,7 @@ public class Inmueble {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String departamento;
+    //private String departamento;
 
     @ManyToOne
     @JoinColumn(name = "ubicacion_id")
@@ -31,10 +32,10 @@ public class Inmueble {
 
     @ManyToOne
     @JoinColumn(name = "agente_asociado_id")
-    private AgenteInmobiliario agenteAsociado;
+    private User agenteAsociado;
 
-    @OneToMany(mappedBy = "inmueble", cascade = CascadeType.ALL)
-    private List<DocumentoImportante> documentosImportantes;
+    //@OneToMany(mappedBy = "inmueble", cascade = CascadeType.ALL)
+    private List<File> documentosImportantes;
 
     @Enumerated(EnumType.STRING)
     private TipoInmueble tipo;
@@ -53,8 +54,10 @@ public class Inmueble {
     @Enumerated(EnumType.STRING)
     private EstadoInmueble estado;
 
-    @Enumerated(EnumType.STRING)
+    /*@Enumerated(EnumType.STRING)
     private EstadoPosteoInmueble estadoPosteoInmueble;
+
+     */
 
     @Positive
     private double precio;
@@ -62,7 +65,7 @@ public class Inmueble {
     @Enumerated(EnumType.STRING)
     private EstadoTransaccion estadoTransa;
 
-    private String ciudad;
+    //private String ciudad;
 
     private int codigoInmueble;
 
@@ -71,7 +74,7 @@ public class Inmueble {
 
     @ManyToOne
     @JoinColumn(name = "asesor_legal_id")
-    private AsesorLegal asesorLegal;
+    private User asesorLegal;
 
     @Positive
     private int cantidadParqueaderos;

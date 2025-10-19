@@ -3,12 +3,18 @@ package com.jsebastian.eden.EdenSys.services.interfaces;
 import com.jsebastian.eden.EdenSys.Dtos.InmuebleDto;
 import com.jsebastian.eden.EdenSys.Dtos.InmueblePatchDto;
 import com.jsebastian.eden.EdenSys.Dtos.InmuebleResponse;
+import com.jsebastian.eden.EdenSys.domain.User;
 import com.jsebastian.eden.EdenSys.exceptions.ValueConflictException;
 
 import java.util.List;
 
 public interface InmuebleService {
     InmuebleResponse crearInmueble(InmuebleDto inmuebleDto) throws ValueConflictException;
+
+    User buscarAgenteConMenorCarga();
+
+    User buscarAsesorConMenorCarga();
+
     void eliminarInmueble(Long id);
     InmuebleResponse actualizarInmueble(Long id, InmuebleDto inmuebleDto);
     InmuebleResponse patchInmueble(Long id, InmueblePatchDto patchDto);

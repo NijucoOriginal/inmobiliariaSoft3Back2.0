@@ -1,10 +1,6 @@
 package com.jsebastian.eden.EdenSys.repository;
 
-import com.jsebastian.eden.EdenSys.domain.Inmueble;
-import com.jsebastian.eden.EdenSys.domain.TipoNegocio;
-import com.jsebastian.eden.EdenSys.domain.EstadoInmueble;
-import com.jsebastian.eden.EdenSys.domain.AgenteInmobiliario;
-import com.jsebastian.eden.EdenSys.domain.TipoInmueble;
+import com.jsebastian.eden.EdenSys.domain.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -42,7 +38,9 @@ public interface InmuebleRepository extends JpaRepository<Inmueble, Long> {
     /**
      * Busca inmuebles por agente asociado
      */
-    List<Inmueble> findByAgenteAsociado(AgenteInmobiliario agenteAsociado);
+    List<Inmueble> findByAgenteAsociado(User agenteAsociado);
+
+    List<Inmueble> findByAsesorLegal(User asesorLegal);
 
     /**
      * Busca inmuebles por tipo

@@ -8,4 +8,5 @@ public enum Rol {
     GERENTE,
     PENDIENTE,
     DESVINCULADO,
+    ASESOR_LEGAL
 }

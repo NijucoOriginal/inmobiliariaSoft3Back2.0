@@ -3,7 +3,7 @@ package com.jsebastian.eden.EdenSys.Dtos;
 import java.util.List;
 
 public record InmueblePatchDto(
-    String departamento,
+    //String departamento,
     String ubicacion,
     String tipoNegocio,
     Long agenteAsociado,
@@ -16,7 +16,7 @@ public record InmueblePatchDto(
     String estado,
     Double precio,
     String estadoTransa,
-    String ciudad,
+    //String ciudad,
     String codigoInmueble,
     List<Long> historial,
     Long asesorLegal,
