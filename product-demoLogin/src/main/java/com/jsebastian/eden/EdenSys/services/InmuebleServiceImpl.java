@@ -11,7 +11,9 @@ import com.jsebastian.eden.EdenSys.services.interfaces.InmuebleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -28,7 +30,52 @@ public class InmuebleServiceImpl implements InmuebleService {
 
 
 
+    @Override
+    public InmuebleResponse crearInmueble(InmuebleDto inmuebleDto,
+                                          List<MultipartFile> imagenes,
+                                          List<MultipartFile> documentosImportantes) {
+        try {
+            Inmueble nuevoInmueble = inmuebleMapper.toEntity(inmuebleDto);
 
+            User agenteMenorCarga = buscarAgenteConMenorCarga();
+            nuevoInmueble.setEstadoTransa(EstadoTransaccion.PENDIENTE);
+            nuevoInmueble.setAgenteAsociado(agenteMenorCarga);
+            nuevoInmueble.setAsesorLegal(agenteMenorCarga);
+
+
+            // 4️⃣ Guardar las imágenes si existen
+            if (imagenes != null && !imagenes.isEmpty()) {
+                for (MultipartFile imagen : imagenes) {
+                    String ruta = guardarArchivo(imagen, "uploads/imagenes/");
+                    Imagen img = new Imagen();
+                    img.setRuta(ruta);
+                    img.setInmueble(nuevoInmueble);
+                    // Guarda en tu repositorio de imágenes
+                    imagenRepository.save(img);
+                }
+            }
+
+            // 5️⃣ Guardar los documentos importantes si existen
+            if (documentosImportantes != null && !documentosImportantes.isEmpty()) {
+                for (MultipartFile doc : documentosImportantes) {
+                    String ruta = guardarArchivo(doc, "uploads/documentos/");
+                    DocumentoImportante documento = new DocumentoImportante();
+                    documento.setRutaArchivo(ruta);
+                    documento.setNombreDocumento(doc.getOriginalFilename());
+                    documento.setFechaExpedicion(LocalDateTime.now());
+                    documento.setInmueble(nuevoInmueble);
+                    documentoImportanteRepository.save(documento);
+                }
+            }
+
+            nuevoInmueble = inmuebleRepository.save(nuevoInmueble);
+            return inmuebleMapper.toResponse(nuevoInmueble);
+
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error al crear inmueble: " + e.getMessage(), e);
+        }
+    }
 
     @Override
     public InmuebleResponse crearInmueble(InmuebleDto inmuebleDto) {

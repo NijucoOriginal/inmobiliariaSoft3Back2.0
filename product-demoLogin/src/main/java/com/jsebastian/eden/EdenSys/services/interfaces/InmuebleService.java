@@ -5,6 +5,8 @@ import com.jsebastian.eden.EdenSys.Dtos.InmueblePatchDto;
 import com.jsebastian.eden.EdenSys.Dtos.InmuebleResponse;
 import com.jsebastian.eden.EdenSys.domain.User;
 import com.jsebastian.eden.EdenSys.exceptions.ValueConflictException;
+import jakarta.validation.Valid;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -20,4 +22,6 @@ public interface InmuebleService {
     InmuebleResponse patchInmueble(Long id, InmueblePatchDto patchDto);
     InmuebleResponse obtenerInmueble(Long id);
     List<InmuebleResponse> obtenerListaDeInmuebles();
+
+    InmuebleResponse crearInmueble(@Valid InmuebleDto inmuebleDto, List<MultipartFile> imagenes, List<MultipartFile> documentosImportantes);
 }
