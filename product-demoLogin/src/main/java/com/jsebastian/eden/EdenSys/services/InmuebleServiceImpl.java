@@ -4,13 +4,18 @@ import com.jsebastian.eden.EdenSys.Dtos.InmuebleDto;
 import com.jsebastian.eden.EdenSys.Dtos.InmueblePatchDto;
 import com.jsebastian.eden.EdenSys.Dtos.InmuebleResponse;
 import com.jsebastian.eden.EdenSys.domain.*;
+import com.jsebastian.eden.EdenSys.exceptions.InmuebleException;
+import com.jsebastian.eden.EdenSys.exceptions.ResourceNotFoundException;
 import com.jsebastian.eden.EdenSys.mappers.InmuebleMapper;
 import com.jsebastian.eden.EdenSys.repository.InmuebleRepository;
 import com.jsebastian.eden.EdenSys.services.interfaces.InmuebleService;
-import lombok.NoArgsConstructor;
+import com.jsebastian.eden.EdenSys.services.interfaces.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -19,34 +24,66 @@ import java.util.List;
 public class InmuebleServiceImpl implements InmuebleService {
 
     @Autowired
-    private  InmuebleRepository inmuebleRepository;
+    private InmuebleRepository inmuebleRepository;
     @Autowired
-    private  InmuebleMapper inmuebleMapper;
-
+    private InmuebleMapper inmuebleMapper;
+    @Autowired
+    private UserService userService;
 
 
     @Override
     public InmuebleResponse crearInmueble(InmuebleDto inmuebleDto) {
-        try{
-            var nuevoInmueble = inmuebleMapper.toEntity(inmuebleDto);
-            nuevoInmueble.setEstadoPosteoInmueble(EstadoPosteoInmueble.PENDIENTE);
-            inmuebleRepository.save(nuevoInmueble);
-            return inmuebleMapper.toResponse(nuevoInmueble);
-        } catch (Exception e) {
+        try {
+
+            try { //-------debemos verificar que sea un user con token habil extreyendo su email y que se valido crear el inmueble
+                String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+                var optionalUser = userService.buscarPorEmail(userEmail);
+                if (optionalUser.isEmpty()) {
+                    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario creador no existe");
+                }
+                User userAux = optionalUser.get();
+                if (userAux.getRol() != Rol.CLIENTE) {
+                    throw new ResponseStatusException(HttpStatus.FORBIDDEN, "El usuario aun no es cliente del sistema");
+                }
+                
+                // Convertir el DTO a entidad
+                var nuevoInmueble = inmuebleMapper.toEntity(inmuebleDto);
+                
+                // Establecer el propietario
+                Cliente propietario = new Cliente();
+                propietario.setId(userAux.getId());
+                nuevoInmueble.setPropietario(propietario);
+                
+                // Establecer la referencia al inmueble en las imágenes
+                if (nuevoInmueble.getImagenes() != null) {
+                    for (Imagen imagen : nuevoInmueble.getImagenes()) {
+                        imagen.setInmueble(nuevoInmueble);
+                    }
+                }
+                
+                // Establecer estado inicial
+                nuevoInmueble.setEstadoPosteoInmueble(EstadoPosteoInmueble.PENDIENTE);
+                
+                // Guardar el inmueble
+                inmuebleRepository.save(nuevoInmueble);
+                
+                return inmuebleMapper.toResponse(nuevoInmueble);
+            } catch (Exception e) {
+                throw new InmuebleException(e);
+            }
+        } catch (InmuebleException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
     public void eliminarInmueble(Long id) {
-        try {
-            var inmueble = inmuebleRepository.findById(id)
-                    .orElseThrow(() -> new RuntimeException("Inmueble no encontrado con id: " + id));
-            inmuebleRepository.deleteById(id);
-        } catch (Exception e) {
-            throw new RuntimeException("Error al eliminar el inmueble: " + e.getMessage(), e);
+        if (!inmuebleRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Inmueble no encontrado con id: " + id);
         }
+        inmuebleRepository.deleteById(id);
     }
+
 
     @Override
     public InmuebleResponse actualizarInmueble(Long id, InmuebleDto inmuebleDto) {
@@ -108,7 +145,7 @@ public class InmuebleServiceImpl implements InmuebleService {
             if (patchDto.nombreContacto() != null) inmueble.setNombreContacto(patchDto.nombreContacto());
             if (patchDto.correoContacto() != null) inmueble.setCorreoContacto(patchDto.correoContacto());
             if (patchDto.imagenes() != null) {
-                // Aquí deberías mapear los IDs a entidades Imagen si es necesario
+                throw new UnsupportedOperationException("Actualización de imágenes no implementada");
                 // inmueble.setImagenes(listaDeImagenes);
             }
             // No se actualizan: agenteAsociado, asesorLegal, historial, documentosImportantes, ubicacion
