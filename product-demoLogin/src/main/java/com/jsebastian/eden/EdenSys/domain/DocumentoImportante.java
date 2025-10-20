@@ -32,5 +32,5 @@ public class DocumentoImportante {
     @JoinColumn(name = "cliente_id")
     private Cliente cliente;
 
-    //hola
+
 }
