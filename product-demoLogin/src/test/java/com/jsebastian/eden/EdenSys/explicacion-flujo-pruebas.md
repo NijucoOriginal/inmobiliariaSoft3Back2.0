@@ -11,8 +11,10 @@ El diagrama de flujo de pruebas ilustra la estrategia de testing implementada en
 Las pruebas unitarias se centran en validar el comportamiento de unidades individuales de código (clases o métodos) de forma aislada:
 
 - **JUnit + Mockito**: Framework principal para la creación y ejecución de pruebas unitarias, complementado con capacidades de mocking
-- **Test de Servicio (UserServiceImplTest)**: Verifica la lógica de negocio contenida en la capa de servicio, simulando sus dependencias
-- **Test de Controlador (UserControllerUnitTest)**: Valida el comportamiento de los controladores REST, aislando su funcionalidad de otras capas
+- **Test de Servicio (UserServiceImplTest)**: Verifica la lógica de negocio contenida en la capa de servicio de usuarios, simulando sus dependencias
+- **Test de Servicio (InmuebleServiceImplTest)**: Verifica la lógica de negocio contenida en la capa de servicio de inmuebles, simulando sus dependencias
+- **Test de Controlador (UserControllerUnitTest)**: Valida el comportamiento de los controladores REST de usuarios, aislando su funcionalidad de otras capas
+- **Test de Controlador (InmuebleControllerUnitTest)**: Valida el comportamiento de los controladores REST de inmuebles, aislando su funcionalidad de otras capas
 
 En este enfoque, las dependencias reales (repositorios, mappers, servicios de email, codificadores de contraseñas) son sustituidas por mocks, permitiendo probar la lógica sin acceder a la base de datos real ni a servicios externos.
 
@@ -21,7 +23,8 @@ En este enfoque, las dependencias reales (repositorios, mappers, servicios de em
 Las pruebas de integración verifican la interacción entre diferentes componentes del sistema en un entorno más cercano al real:
 
 - **Spring Boot Test**: Framework que proporciona el contexto necesario para pruebas de integración en aplicaciones Spring Boot
-- **Test de Repositorio (UserRepositoryTest)**: Comprueba la correcta interacción con la base de datos real, incluyendo operaciones de consulta e inserción
+- **Test de Repositorio (UserRepositoryTest)**: Comprueba la correcta interacción con la base de datos real para usuarios, incluyendo operaciones de consulta e inserción
+- **Test de Repositorio (InmuebleRepositoryTest)**: Comprueba la correcta interacción con la base de datos real para inmuebles, incluyendo operaciones de consulta e inserción
 
 Este tipo de pruebas se enfoca en validar que los componentes del sistema trabajen correctamente juntos, especialmente en lo que respecta al acceso y manipulación de datos.
 

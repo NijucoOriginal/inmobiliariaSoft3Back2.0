@@ -1,6 +1,6 @@
-# Pruebas Unitarias del Sistema de Gestión de Usuarios
+# Pruebas Unitarias del Sistema de Gestión de Usuarios e Inmuebles
 
-Este directorio contiene las pruebas unitarias y de integración para el sistema de gestión de usuarios del proyecto Inmobiliaria Eden. Aquí se valida el flujo real de negocio, desde la creación y activación de usuarios hasta la consulta y validación de existencia, asegurando que cada capa funcione como debe y que los errores se manejen correctamente.
+Este directorio contiene las pruebas unitarias y de integración para el sistema de gestión de usuarios e inmuebles del proyecto Inmobiliaria Eden. Aquí se valida el flujo real de negocio, desde la creación y activación de usuarios hasta la consulta y validación de existencia, asegurando que cada capa funcione como debe y que los errores se manejen correctamente.
 
 ## Estructura de las Pruebas
 
@@ -9,11 +9,16 @@ Las pruebas están organizadas siguiendo la estructura del proyecto:
 ```
 src/test/java/com/jsebastian/eden/EdenSys/
 ├── controller/
-│   └── UserControllerUnitTest.java      # Pruebas unitarias para el controlador de usuarios (sin MockMvc)
+│   ├── UserControllerUnitTest.java       # Pruebas unitarias para el controlador de usuarios (sin MockMvc)
+│   └── InmuebleControllerUnitTest.java   # Pruebas unitarias para el controlador de inmuebles (sin MockMvc)
 ├── services/
-│   └── UserServiceImplTest.java         # Pruebas unitarias para la lógica del servicio de usuarios
+│   ├── UserServiceImplTest.java          # Pruebas unitarias para la lógica del servicio de usuarios
+│   └── InmuebleServiceImplTest.java      # Pruebas unitarias para la lógica del servicio de inmuebles
 └── repository/
-    └── UserRepositoryTest.java          # Pruebas de integración para el repositorio de usuarios
+    ├── UserRepositoryTest.java           # Pruebas de integración para el repositorio de usuarios
+    ├── InmuebleRepositoryTest.java       # Pruebas de integración para el repositorio de inmuebles
+    ├── UserRepositorySimpleTest.java     # Pruebas de integración simplificadas para usuarios
+    └── InmuebleRepositorySimpleTest.java # Pruebas de integración simplificadas para inmuebles
 ```
 
 ## Descripción de las Pruebas
@@ -34,6 +39,31 @@ Pruebas unitarias para la lógica de negocio del servicio de usuarios. Aquí se 
 3. **crearUsuario_errorEnMapper_lanzaRuntimeException**
    - Simula un error inesperado en el mapeo de datos.
    - Verifica que se lanza una excepción genérica y que el mensaje es el esperado.
+
+### InmuebleServiceImplTest.java
+
+Pruebas unitarias para la lógica de negocio del servicio de inmuebles:
+
+1. **crearInmueble_exitoso**
+   - Simula la creación de un inmueble cuando el usuario es válido y tiene rol CLIENTE.
+   - Verifica que el inmueble se cree correctamente con estado PENDIENTE.
+   - Comprueba que el servicio retorna correctamente el DTO de respuesta.
+
+2. **crearInmueble_usuarioNoEncontrado_lanzaExcepcion**
+   - Simula el intento de crear un inmueble cuando el usuario no existe.
+   - Verifica que se lanza una excepción y que no se guarda el inmueble.
+
+3. **crearInmueble_usuarioNoEsCliente_lanzaExcepcion**
+   - Simula el intento de crear un inmueble cuando el usuario no tiene rol CLIENTE.
+   - Verifica que se lanza una excepción y que no se guarda el inmueble.
+
+4. **obtenerInmueble_exitoso**
+   - Simula la consulta de un inmueble existente por su ID.
+   - Verifica que el servicio retorna correctamente el DTO de respuesta.
+
+5. **obtenerInmueble_noEncontrado_lanzaExcepcion**
+   - Simula la consulta de un inmueble inexistente.
+   - Verifica que se lanza una excepción.
 
 ### UserControllerUnitTest.java
 
@@ -59,6 +89,30 @@ Pruebas unitarias para el controlador REST de usuarios, directamente sobre los m
    - Simula la consulta de un usuario inexistente.
    - Verifica que el controlador responde con status 404.
 
+### InmuebleControllerUnitTest.java
+
+Pruebas unitarias para el controlador REST de inmuebles:
+
+1. **crearInmueble_exitoso**
+   - Simula el flujo real de creación de inmueble.
+   - Verifica que el controlador retorna correctamente el DTO de respuesta con status 201.
+
+2. **crearInmueble_error_lanzaExcepcion**
+   - Simula un error en la creación del inmueble.
+   - Verifica que el controlador responde con status 409 y el mensaje de error adecuado.
+
+3. **obtenerInmueble_exitoso**
+   - Simula la consulta de un inmueble existente por su ID.
+   - Verifica que el controlador responde con status 200 y los datos correctos.
+
+4. **obtenerInmueble_noEncontrado**
+   - Simula la consulta de un inmueble inexistente.
+   - Verifica que el controlador responde con status 404.
+
+5. **obtenerListaDeInmuebles_exitoso**
+   - Simula la consulta de la lista de todos los inmuebles.
+   - Verifica que el controlador responde con status 200 y la lista de inmuebles.
+
 ### UserRepositoryTest.java
 
 Pruebas de integración para el repositorio de usuarios, validando la interacción real con la base de datos:
@@ -69,20 +123,42 @@ Pruebas de integración para el repositorio de usuarios, validando la interacci�
 2. **testExistsByEmail**
    - Comprueba que el método `existsByEmail` retorna `true` cuando el email existe y `false` cuando no.
 
+### InmuebleRepositoryTest.java
+
+Pruebas de integración para el repositorio de inmuebles:
+
+1. **findByCodigoInmueble_DebeRetornarInmueble_CuandoExiste**
+   - Verifica que se puede encontrar un inmueble por su código en la base de datos.
+
+2. **existsByCodigoInmueble_DebeRetornarTrue_CuandoInmuebleExiste**
+   - Comprueba que el método `existsByCodigoInmueble` retorna `true` cuando el código existe.
+
+3. **existsByCodigoInmueble_DebeRetornarFalse_CuandoInmuebleNoExiste**
+   - Comprueba que el método `existsByCodigoInmueble` retorna `false` cuando el código no existe.
+
+4. **findByCiudad_DebeRetornarInmueblesConCiudadEspecificado**
+   - Verifica que se pueden encontrar inmuebles por ciudad.
+
+5. **findByTipoNegocio_DebeRetornarInmueblesConTipoNegocioEspecificado**
+   - Verifica que se pueden encontrar inmuebles por tipo de negocio.
+
 ## Ejecución de las Pruebas
 
 Para ejecutar las pruebas, puedes usar cualquiera de los siguientes comandos:
 
 ```bash
 # Ejecutar todas las pruebas
-y ./mvnw test
+./mvnw test
 
 # Ejecutar pruebas específicas
 ./mvnw test -Dtest=UserServiceImplTest
+./mvnw test -Dtest=InmuebleServiceImplTest
 ./mvnw test -Dtest=UserControllerUnitTest
+./mvnw test -Dtest=InmuebleControllerUnitTest
 
 # Ejecutar una prueba específica
 ./mvnw test -Dtest=UserServiceImplTest#crearUsuario_exitoso
+./mvnw test -Dtest=InmuebleServiceImplTest#crearInmueble_exitoso
 ```
 
 ## Tecnologías Utilizadas
