@@ -1,6 +1,7 @@
 package com.jsebastian.eden.EdenSys.services;
 
 import ch.qos.logback.classic.Logger;
+import com.jsebastian.eden.EdenSys.Dtos.AuthResponse;
 import com.jsebastian.eden.EdenSys.Dtos.UsuarioResponse;
 import com.jsebastian.eden.EdenSys.domain.Rol;
 import com.jsebastian.eden.EdenSys.domain.User;
@@ -379,5 +380,4 @@ public class UserServiceImpl implements UserService {
     public String generarToken(User usuario) {
         return jwtService.generateToken(usuario);
     }
-    
 }

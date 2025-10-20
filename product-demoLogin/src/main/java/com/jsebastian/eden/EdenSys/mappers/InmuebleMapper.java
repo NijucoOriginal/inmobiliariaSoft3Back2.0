@@ -8,10 +8,10 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface InmuebleMapper {
-    //@Mapping(target = "departamento", source = "departamento")
+    @Mapping(target = "departamento", source = "departamento")
     @Mapping(target = "ubicacion", source = "ubicacion")
     @Mapping(target = "tipoNegocio", source = "tipoNegocio")
-    //@Mapping(target = "agenteAsociado", source = "agenteAsociado")
+    @Mapping(target = "agenteAsociado", source = "agenteAsociado")
     @Mapping(target = "documentosImportantes", source = "documentosImportantes")
     @Mapping(target = "tipo", source = "tipo")
     @Mapping(target = "medidas", source = "medidas")
@@ -32,7 +32,7 @@ public interface InmuebleMapper {
     @Mapping(target = "imagenes", source = "imagenes")
     Inmueble toEntity(InmuebleDto dto);
 
-    //@Mapping(target = "departamento", source = "departamento")
+    @Mapping(target = "departamento", source = "departamento")
     @Mapping(target = "ubicacion", source = "ubicacion")
     @Mapping(target = "tipoNegocio", source = "tipoNegocio")
     @Mapping(target = "agenteAsociado", source = "agenteAsociado")

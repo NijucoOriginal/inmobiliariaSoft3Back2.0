@@ -6,8 +6,8 @@ import com.jsebastian.eden.EdenSys.Dtos.InmuebleResponse;
 import com.jsebastian.eden.EdenSys.domain.*;
 import com.jsebastian.eden.EdenSys.mappers.InmuebleMapper;
 import com.jsebastian.eden.EdenSys.repository.InmuebleRepository;
-import com.jsebastian.eden.EdenSys.repository.UserRepository;
 import com.jsebastian.eden.EdenSys.services.interfaces.InmuebleService;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,83 +23,19 @@ public class InmuebleServiceImpl implements InmuebleService {
     @Autowired
     private  InmuebleMapper inmuebleMapper;
 
-    @Autowired
-    private  UserRepository userRepository;
-
-
-
 
 
     @Override
     public InmuebleResponse crearInmueble(InmuebleDto inmuebleDto) {
         try{
             var nuevoInmueble = inmuebleMapper.toEntity(inmuebleDto);
-            User agenteMenorCarga = buscarAgenteConMenorCarga();
-            nuevoInmueble.setEstadoTransa(EstadoTransaccion.PENDIENTE);
-            nuevoInmueble.setAgenteAsociado(agenteMenorCarga);
-            nuevoInmueble.setAsesorLegal(agenteMenorCarga);
+            nuevoInmueble.setEstadoPosteoInmueble(EstadoPosteoInmueble.PENDIENTE);
             inmuebleRepository.save(nuevoInmueble);
             return inmuebleMapper.toResponse(nuevoInmueble);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
-
-    @Override
-    public User buscarAgenteConMenorCarga() {
-        int menor=0;
-        User usuarioMenorCarga=null;
-        List<User> users=userRepository.findByRol(Rol.AGENTE);
-        for(int i=0;i<users.size();i++)
-        {
-            User user=users.get(i);
-            if(i==0)
-            {
-                List<Inmueble> inmueblesAgente=inmuebleRepository.findByAgenteAsociado(user);
-                menor=inmueblesAgente.size();
-                usuarioMenorCarga=user;
-            }
-            else
-            {
-                List<Inmueble> inmueblesAgente=inmuebleRepository.findByAgenteAsociado(user);
-                if(inmueblesAgente.size()<menor)
-                {
-                    menor=inmueblesAgente.size();
-                    usuarioMenorCarga=user;
-                }
-            }
-        }
-        return usuarioMenorCarga;
-    }
-
-    @Override
-    public User buscarAsesorConMenorCarga() {
-        int menor=0;
-        User usuarioMenorCarga=null;
-        List<User> users=userRepository.findByRol(Rol.ASESOR_LEGAL);
-        for(int i=0;i<users.size();i++)
-        {
-            User user=users.get(i);
-            if(i==0)
-            {
-                List<Inmueble> inmueblesAsesor=inmuebleRepository.findByAsesorLegal(user);
-                menor=inmueblesAsesor.size();
-                usuarioMenorCarga=user;
-            }
-            else
-            {
-                List<Inmueble> inmueblesAgente=inmuebleRepository.findByAsesorLegal(user);
-                if(inmueblesAgente.size()<menor)
-                {
-                    menor=inmueblesAgente.size();
-                    usuarioMenorCarga=user;
-                }
-            }
-        }
-        return usuarioMenorCarga;
-    }
-
-
 
     @Override
     public void eliminarInmueble(Long id) {

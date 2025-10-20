@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
-import java.io.File;
 import java.time.LocalDateTime;
 
 @Entity
@@ -32,6 +31,4 @@ public class DocumentoImportante {
     @ManyToOne
     @JoinColumn(name = "cliente_id")
     private Cliente cliente;
-
-    private String rutaArchivo;
 }
