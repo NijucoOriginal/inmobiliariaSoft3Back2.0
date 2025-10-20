@@ -19,6 +19,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @AutoConfigureMockMvc(addFilters = false)
@@ -40,13 +41,14 @@ class AuthControllerTest {
     @Test
     void register_DebeRetornar201_CuandoExitoso() throws Exception {
         RegisterRequest req = new RegisterRequest("Juan","Pérez","12345678","3001234567","test@example.com","Password123@");
-        // no excepción => 201
         String json = objectMapper.writeValueAsString(req);
 
         mockMvc.perform(post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
+                .andDo(print())
                 .andExpect(status().isCreated());
+        System.out.println("[LOG] Registro exitoso para: " + req.email());
     }
 
     @Test
@@ -65,8 +67,10 @@ class AuthControllerTest {
     void activate_DebeRetornar200_CuandoCodigoValido() throws Exception {
         when(userService.activarUsuario("ABC123")).thenReturn(true);
         mockMvc.perform(get("/api/auth/activate/ABC123"))
+                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("activada")));
+        System.out.println("[LOG] Activación exitosa para código: ABC123");
     }
 
     @Test
@@ -85,8 +89,10 @@ class AuthControllerTest {
         mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(req)))
+                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.token").value("jwt.token"));
+        System.out.println("[LOG] Login exitoso para: " + req.email() + " | Token: jwt.token");
     }
 
     @Test

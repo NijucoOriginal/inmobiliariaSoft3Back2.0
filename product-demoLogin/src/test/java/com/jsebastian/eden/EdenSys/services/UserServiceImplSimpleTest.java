@@ -82,6 +82,7 @@ class UserServiceImplSimpleTest {
 
         // Act
         UsuarioResponse result = userService.crearUsuario(crearUsuarioDto);
+        System.out.println("[testCrearUsuarioExitoso] Response: " + result);
 
         // Assert
         assertNotNull(result);
@@ -112,7 +113,8 @@ class UserServiceImplSimpleTest {
         ValueConflictException exception = assertThrows(
                 ValueConflictException.class, 
                 () -> userService.crearUsuario(crearUsuarioDto));
-        
+        System.out.println("[testCrearUsuarioConEmailDuplicado] Exception: " + exception.getMessage());
+
         assertTrue(exception.getMessage().contains("Ya existe un usuario con este email"));
         verify(userRepository).existsByEmail("test@example.com");
         verify(userMapper, never()).toEntity(any());
@@ -134,6 +136,7 @@ class UserServiceImplSimpleTest {
 
         // Act
         Optional<User> result = userService.buscarPorEmail(email);
+        System.out.println("[testBuscarPorEmail] Response: " + result);
 
         // Assert
         assertTrue(result.isPresent());
@@ -158,6 +161,7 @@ class UserServiceImplSimpleTest {
 
         // Act
         boolean result = userService.activarUsuario(codigo);
+        System.out.println("[testActivarUsuarioConCodigoValido] Response: " + result);
 
         // Assert
         assertTrue(result);

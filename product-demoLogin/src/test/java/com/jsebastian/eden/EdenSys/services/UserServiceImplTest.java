@@ -58,6 +58,7 @@ class UserServiceImplTest {
         when(userMapper.toUsuarioResponse(any(User.class))).thenReturn(usuarioResponse);
 
         UsuarioResponse result = userService.crearUsuario(dto);
+        System.out.println("[crearUsuario_exitoso] Response: " + result);
         assertEquals("test@example.com", result.email());
         assertEquals(Rol.PENDIENTE, result.rol());
         verify(userRepository).save(any(User.class));
@@ -67,7 +68,8 @@ class UserServiceImplTest {
     void crearUsuario_emailDuplicado_lanzaExcepcion() {
         CrearUsuarioDto dto = new CrearUsuarioDto("Juan", "Pérez", "12345678", "3001234567", "test@example.com", "Password123@", Rol.USER);
         when(userRepository.existsByEmail("test@example.com")).thenReturn(true);
-        assertThrows(ValueConflictException.class, () -> userService.crearUsuario(dto));
+        Exception ex = assertThrows(ValueConflictException.class, () -> userService.crearUsuario(dto));
+        System.out.println("[crearUsuario_emailDuplicado_lanzaExcepcion] Exception: " + ex.getMessage());
         verify(userRepository, never()).save(any());
     }
 
@@ -77,7 +79,7 @@ class UserServiceImplTest {
         when(userRepository.existsByEmail("test2@example.com")).thenReturn(false);
         when(userMapper.toEntity(dto)).thenThrow(new RuntimeException("Error en el mapper"));
         RuntimeException ex = assertThrows(RuntimeException.class, () -> userService.crearUsuario(dto));
+        System.out.println("[crearUsuario_errorEnMapper_lanzaRuntimeException] Exception: " + ex.getMessage());
         assertTrue(ex.getMessage().contains("Error al crear el usuario"));
     }
 }
-

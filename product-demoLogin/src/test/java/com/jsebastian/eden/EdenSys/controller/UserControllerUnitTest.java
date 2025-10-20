@@ -46,6 +46,7 @@ class UserControllerUnitTest {
         when(userService.crearUsuario(any(CrearUsuarioDto.class))).thenReturn(usuarioResponse);
 
         ResponseEntity<?> response = userController.crearUsuario(crearUsuarioDto);
+        System.out.println("[crearUsuario_exitoso] Response: " + response);
         assertEquals(200, response.getStatusCode().value());
         assertInstanceOf(UsuarioResponse.class, response.getBody());
         UsuarioResponse body = (UsuarioResponse) response.getBody();
@@ -57,6 +58,7 @@ class UserControllerUnitTest {
     void crearUsuario_emailDuplicado() {
         when(userService.crearUsuario(any(CrearUsuarioDto.class))).thenThrow(new ValueConflictException("Ya existe un usuario con este email: test@example.com"));
         ResponseEntity<?> response = userController.crearUsuario(crearUsuarioDto);
+        System.out.println("[crearUsuario_emailDuplicado] Response: " + response);
         assertEquals(409, response.getStatusCode().value());
         assertInstanceOf(java.util.Map.class, response.getBody());
         assertEquals("Conflicto de datos", ((java.util.Map<?, ?>) response.getBody()).get("error"));
@@ -66,6 +68,7 @@ class UserControllerUnitTest {
     void crearUsuario_errorInesperado() {
         when(userService.crearUsuario(any(CrearUsuarioDto.class))).thenThrow(new RuntimeException("Error inesperado"));
         ResponseEntity<?> response = userController.crearUsuario(crearUsuarioDto);
+        System.out.println("[crearUsuario_errorInesperado] Response: " + response);
         assertEquals(500, response.getStatusCode().value());
         assertInstanceOf(java.util.Map.class, response.getBody());
         assertEquals("Error interno del servidor", ((java.util.Map<?, ?>) response.getBody()).get("error"));
@@ -75,6 +78,7 @@ class UserControllerUnitTest {
     void obtenerUsuarioPorId_exitoso() {
         when(userService.buscarPorId(1L)).thenReturn(Optional.of(testUser));
         ResponseEntity<User> response = userController.obtenerUsuarioPorId(1L);
+        System.out.println("[obtenerUsuarioPorId_exitoso] Response: " + response);
         assertEquals(200, response.getStatusCode().value());
         assertNotNull(response.getBody());
         assertEquals("test@example.com", response.getBody().getEmail());
@@ -84,6 +88,7 @@ class UserControllerUnitTest {
     void obtenerUsuarioPorId_noEncontrado() {
         when(userService.buscarPorId(1L)).thenReturn(Optional.empty());
         ResponseEntity<User> response = userController.obtenerUsuarioPorId(1L);
+        System.out.println("[obtenerUsuarioPorId_noEncontrado] Response: " + response);
         assertEquals(404, response.getStatusCode().value());
         assertNull(response.getBody());
     }
