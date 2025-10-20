@@ -12,7 +12,7 @@ Content-Type: application/json
 ### POST crear un nuevo inmueble en un user
 POST http://localhost:8080/api/inmuebles
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqc2ViYXNqYXZhMzFAZ21haWwuY29tIiwicm9sIjoiQ0xJRU5URSIsImlhdCI6MTc2MDkyMTYzNiwiZXhwIjoxNzYxMDA4MDM2fQ.CzyWpAFwtGyaZeOdebaCMhyCyyD4_1jZUDRROPIOdKk
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqc2ViYXNqYXZhMzFAZ21haWwuY29tIiwicm9sIjoiQ0xJRU5URSIsImlhdCI6MTc2MDkyNDc0MiwiZXhwIjoxNzYxMDExMTQyfQ.04bml8s7aZEgck52u1Dy4W9q0S4X2CJ2LI84KFLVlak
 
 {
   "departamento": "Antioquia",

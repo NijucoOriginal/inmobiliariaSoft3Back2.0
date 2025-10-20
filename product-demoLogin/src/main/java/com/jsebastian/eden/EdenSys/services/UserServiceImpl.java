@@ -16,7 +16,6 @@ import com.sendgrid.*;
 import com.sendgrid.helpers.mail.objects.Email;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -31,14 +30,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private UserMapper userMapper;
-
-    @Autowired
-    private SendGrid sendGrid;
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
+    private final SendGrid sendGrid;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
     @Value("${sendgrid.from.email}")
     private String fromEmail;
@@ -46,9 +42,6 @@ public class UserServiceImpl implements UserService {
     private String fromName;
 
     private static final Logger logger = (Logger) LoggerFactory.getLogger(UserServiceImpl.class);
-
-    private final PasswordEncoder passwordEncoder;
-    private final JwtService jwtService;
 
 
     /**
