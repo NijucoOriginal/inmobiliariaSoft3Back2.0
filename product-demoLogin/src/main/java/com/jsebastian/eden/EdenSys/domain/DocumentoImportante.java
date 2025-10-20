@@ -9,6 +9,7 @@ import java.io.File;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "documento_importante")
 @NotEmpty
 @NotBlank
 @Getter
@@ -22,16 +23,15 @@ public class DocumentoImportante {
     private Long id;
     @PastOrPresent
     private LocalDateTime fechaExpedicion;
-    private String descripcion;
     private String nombreDocumento;
     
     @ManyToOne
     @JoinColumn(name = "inmueble_id")
     private Inmueble inmueble;
-    
+
     @ManyToOne
     @JoinColumn(name = "cliente_id")
-    private Cliente cliente;
+    private User cliente;
 
     private String rutaArchivo;
 }

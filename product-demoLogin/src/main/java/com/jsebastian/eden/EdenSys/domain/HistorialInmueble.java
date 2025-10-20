@@ -41,7 +41,7 @@ public class HistorialInmueble {
 
     @ManyToOne
     @JoinColumn(name = "cliente_id")
-    private Cliente propietario;
+    private User propietario;
     
     @ManyToOne
     @JoinColumn(name = "inmueble_id")

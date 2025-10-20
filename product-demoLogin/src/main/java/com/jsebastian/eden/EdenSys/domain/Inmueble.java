@@ -90,5 +90,5 @@ public class Inmueble {
 
     @ManyToOne
     @JoinColumn(name = "propietario_id")
-    private Cliente propietario;
+    private User propietario;
 }

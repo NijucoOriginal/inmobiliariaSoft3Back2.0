@@ -5,6 +5,8 @@ import com.jsebastian.eden.EdenSys.Dtos.InmueblePatchDto;
 import com.jsebastian.eden.EdenSys.Dtos.InmuebleResponse;
 import com.jsebastian.eden.EdenSys.domain.*;
 import com.jsebastian.eden.EdenSys.mappers.InmuebleMapper;
+import com.jsebastian.eden.EdenSys.repository.DocumentoImportanteRepository;
+import com.jsebastian.eden.EdenSys.repository.ImagenRepository;
 import com.jsebastian.eden.EdenSys.repository.InmuebleRepository;
 import com.jsebastian.eden.EdenSys.repository.UserRepository;
 import com.jsebastian.eden.EdenSys.services.interfaces.InmuebleService;
@@ -13,8 +15,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -28,27 +36,35 @@ public class InmuebleServiceImpl implements InmuebleService {
     @Autowired
     private  UserRepository userRepository;
 
+    @Autowired
+    private ImagenRepository imagenRepository;
+
+    @Autowired
+    private DocumentoImportanteRepository documentoImportanteRepository;
+
 
 
     @Override
     public InmuebleResponse crearInmueble(InmuebleDto inmuebleDto,
                                           List<MultipartFile> imagenes,
-                                          List<MultipartFile> documentosImportantes) {
+                                          List<MultipartFile> documentosImportantes,
+                                          String correoUsuario) {
         try {
             Inmueble nuevoInmueble = inmuebleMapper.toEntity(inmuebleDto);
 
             User agenteMenorCarga = buscarAgenteConMenorCarga();
+            User asesorMenorCarga = buscarAsesorConMenorCarga();
             nuevoInmueble.setEstadoTransa(EstadoTransaccion.PENDIENTE);
             nuevoInmueble.setAgenteAsociado(agenteMenorCarga);
-            nuevoInmueble.setAsesorLegal(agenteMenorCarga);
+            nuevoInmueble.setAsesorLegal(asesorMenorCarga);
 
 
             // 4️⃣ Guardar las imágenes si existen
             if (imagenes != null && !imagenes.isEmpty()) {
                 for (MultipartFile imagen : imagenes) {
-                    String ruta = guardarArchivo(imagen, "uploads/imagenes/");
+                    String ruta = guardarArchivo(imagen, "src/main/resources/imagenes",correoUsuario);
                     Imagen img = new Imagen();
-                    img.setRuta(ruta);
+                    img.setUrl(ruta);
                     img.setInmueble(nuevoInmueble);
                     // Guarda en tu repositorio de imágenes
                     imagenRepository.save(img);
@@ -58,12 +74,16 @@ public class InmuebleServiceImpl implements InmuebleService {
             // 5️⃣ Guardar los documentos importantes si existen
             if (documentosImportantes != null && !documentosImportantes.isEmpty()) {
                 for (MultipartFile doc : documentosImportantes) {
-                    String ruta = guardarArchivo(doc, "uploads/documentos/");
+                    String ruta = guardarArchivo(doc, "src/main/resources/documentosImportantes", nuevoInmueble.getCorreoContacto());
                     DocumentoImportante documento = new DocumentoImportante();
                     documento.setRutaArchivo(ruta);
                     documento.setNombreDocumento(doc.getOriginalFilename());
                     documento.setFechaExpedicion(LocalDateTime.now());
                     documento.setInmueble(nuevoInmueble);
+                    User usuarioPropietario = userRepository.findByEmail(correoUsuario)
+                            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+                    documento.setCliente(usuarioPropietario);
                     documentoImportanteRepository.save(documento);
                 }
             }
@@ -76,6 +96,24 @@ public class InmuebleServiceImpl implements InmuebleService {
             throw new RuntimeException("Error al crear inmueble: " + e.getMessage(), e);
         }
     }
+
+    private String guardarArchivo(MultipartFile archivo, String carpetaDestino,String correoUsuario) throws IOException {
+        // Crear carpeta si no existe
+        Path carpeta = Paths.get(carpetaDestino);
+        if (!Files.exists(carpeta)) {
+            Files.createDirectories(carpeta);
+        }
+
+        // Generar nombre único
+        String nombreArchivo = UUID.randomUUID() + "_" + archivo.getOriginalFilename()+"_"+correoUsuario;
+        Path rutaArchivo = carpeta.resolve(nombreArchivo);
+
+        // Guardar físicamente
+        Files.copy(archivo.getInputStream(), rutaArchivo, StandardCopyOption.REPLACE_EXISTING);
+
+        return rutaArchivo.toString(); // O devolver una ruta relativa si prefieres
+    }
+
 
     @Override
     public InmuebleResponse crearInmueble(InmuebleDto inmuebleDto) {

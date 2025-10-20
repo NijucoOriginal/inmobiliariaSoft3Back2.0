@@ -35,12 +35,13 @@ public class InmuebleController {
     public ResponseEntity<?> crearInmueble(
             @RequestPart("inmuebleDto") @Valid InmuebleDto inmuebleDto,
             @RequestPart(value = "imagenes", required = false) List<MultipartFile> imagenes,
-            @RequestPart(value = "documentosImportantes", required = false) List<MultipartFile> documentosImportantes
+            @RequestPart(value = "documentosImportantes", required = false) List<MultipartFile> documentosImportantes,
+            @RequestParam("correoUsuario") String correoUsuario
     ) {
         try
         {
             // Lógica del servicio: guardar archivos, asociarlos al inmueble, etc.
-            InmuebleResponse inmuebleResponse = inmuebleService.crearInmueble(inmuebleDto, imagenes, documentosImportantes);
+            InmuebleResponse inmuebleResponse = inmuebleService.crearInmueble(inmuebleDto, imagenes, documentosImportantes,correoUsuario);
 
             return ResponseEntity.status(HttpStatus.CREATED).body(inmuebleResponse);
         }

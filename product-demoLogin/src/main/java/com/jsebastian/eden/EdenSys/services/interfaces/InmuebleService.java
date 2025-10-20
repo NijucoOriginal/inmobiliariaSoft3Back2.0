@@ -23,5 +23,5 @@ public interface InmuebleService {
     InmuebleResponse obtenerInmueble(Long id);
     List<InmuebleResponse> obtenerListaDeInmuebles();
 
-    InmuebleResponse crearInmueble(@Valid InmuebleDto inmuebleDto, List<MultipartFile> imagenes, List<MultipartFile> documentosImportantes);
+    InmuebleResponse crearInmueble(@Valid InmuebleDto inmuebleDto, List<MultipartFile> imagenes, List<MultipartFile> documentosImportantes,String correoUsuario) ;
 }

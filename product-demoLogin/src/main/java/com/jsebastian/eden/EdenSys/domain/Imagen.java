@@ -1,12 +1,7 @@
 package com.jsebastian.eden.EdenSys.domain;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.JoinColumn;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
@@ -17,14 +12,15 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Entity
+@Table(name = "imagen")
 public class Imagen {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String url;
-    private String descripcion;
     
     @ManyToOne
     @JoinColumn(name = "inmueble_id")
     private Inmueble inmueble;
+
 }
