@@ -1,7 +1,7 @@
 ### Un usuario ingrsa a su cuenta y postea un inmueble
 
 ### El registro y la activacion han sido exitosos, ahora se puede loguear el usuario
-POST http://localhost:9020/api/auth/login
+POST http://localhost:8080/api/auth/login
 Content-Type: application/json
 
 {
@@ -10,9 +10,9 @@ Content-Type: application/json
 }
 
 ### POST crear un nuevo inmueble en un user
-POST http://localhost:9020/api/inmuebles
+POST http://localhost:8080/api/inmuebles
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqc2ViYXNkcm9pZDMxQGdtYWlsLmNvbSIsImlhdCI6MTc0ODUwMjMxMywiZXhwIjoxNzQ4NTg4NzEzfQ.KpVVcufxxUq72VEXb7e1bF_cL8ghnSZ1HpiUIzZuvkU
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqc2ViYXNqYXZhMzFAZ21haWwuY29tIiwicm9sIjoiQ0xJRU5URSIsImlhdCI6MTc2MDkyMTYzNiwiZXhwIjoxNzYxMDA4MDM2fQ.CzyWpAFwtGyaZeOdebaCMhyCyyD4_1jZUDRROPIOdKk
 
 {
   "departamento": "Antioquia",
@@ -22,7 +22,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqc2ViYXNkcm9pZDMxQGdtYWlsL
     "longitud": -75.5812
   },
   "tipoNegocio": "VENTA",
-  "tipoInmueble": "APARTAMENTO",
+  "tipo": "APARTAMENTO",
   "medidas": 120.5,
   "habitaciones": 3,
   "banos": 2,
