@@ -12,8 +12,6 @@ import lombok.*;
 import java.util.List;
 
 
-@NotEmpty
-@NotBlank
 @Entity
 @RequiredArgsConstructor
 @Getter

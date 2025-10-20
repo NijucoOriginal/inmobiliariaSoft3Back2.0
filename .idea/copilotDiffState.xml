@@ -39,15 +39,6 @@
             </PendingDiffInfo>
           </value>
         </entry>
-        <entry key="$PROJECT_DIR$/product-demoLogin/src/test/java/com/jsebastian/eden/EdenSys/flujo-pruebas.mmd">
-          <value>
-            <PendingDiffInfo>
-              <option name="filePath" value="$PROJECT_DIR$/product-demoLogin/src/test/java/com/jsebastian/eden/EdenSys/flujo-pruebas.mmd" />
-              <option name="originalContent" value="---&#10;title: Diagrama de flujo de pruebas unitarias y de integración&#10;---&#10;&#10;flowchart TD&#10;    subgraph Pruebas_Unitarias[Pruebas Unitarias]&#10;        A1[JUnit + Mockito]&#10;        A2[Test de Servicio \(UserServiceImplTest\)]&#10;        A3[Test de Controlador \(UserControllerUnitTest\)]&#10;        A1 --&gt; A2&#10;        A1 --&gt; A3&#10;        A2 --&gt;|Mockea dependencias (repos, mappers, email, encoder)| B1[UserServiceImpl]&#10;        A3 --&gt;|Mockea UserService| B2[UserController]&#10;        B1 -.-&gt;|No accede a BD real| X1(( ))&#10;        B2 -.-&gt;|No accede a BD real| X2(( ))&#10;    end&#10;&#10;    subgraph Pruebas_Integracion[Pruebas de Integración]&#10;        C1[Spring Boot Test]&#10;        C2[Test de Repositorio \(UserRepositoryTest\)]&#10;        C1 --&gt; C2&#10;        C2 --&gt;|Acceso real a BD| D1[UserRepository]&#10;        D1 --&gt;|Consulta/Inserta| DB[Base de Datos]&#10;    end&#10;&#10;    style Pruebas_Unitarias fill:#e0f7fa,stroke:#00796b,stroke-width:2px&#10;    style Pruebas_Integracion fill:#fff3e0,stroke:#e65100,stroke-width:2px&#10;    style DB fill:#fffde7,stroke:#fbc02d,stroke-width:2px" />
-              <option name="updatedContent" value="---&#10;title: Diagrama de flujo de pruebas unitarias y de integración&#10;---&#10;&#10;flowchart TD&#10;    subgraph Pruebas_Unitarias[Pruebas Unitarias]&#10;        A1[JUnit + Mockito]&#10;        A2[Test de Servicio \(UserServiceImplTest\)]&#10;        A3[Test de Controlador \(UserControllerUnitTest\)]&#10;        A1 --&gt; A2&#10;        A1 --&gt; A3&#10;        A2 --&gt;|Mockea dependencias (repos, mappers, email, encoder)| B1[UserServiceImpl]&#10;        A3 --&gt;|Mockea UserService| B2[UserController]&#10;        B1 -.-&gt;|No accede a BD real| X1(( ))&#10;        B2 -.-&gt;|No accede a BD real| X2(( ))&#10;    end&#10;&#10;    subgraph Pruebas_Integracion[Pruebas de Integración]&#10;        C1[Spring Boot Test]&#10;        C2[Test de Repositorio \(UserRepositoryTest\)]&#10;        C1 --&gt; C2&#10;        C2 --&gt;|Acceso real a BD| D1[UserRepository]&#10;        D1 --&gt;|Consulta/Inserta| DB[Base de Datos]&#10;    end&#10;&#10;    style Pruebas_Unitarias fill:#e0f7fa,stroke:#00796b,stroke-width:2px&#10;    style Pruebas_Integracion fill:#fff3e0,stroke:#e65100,stroke-width:2px&#10;    style DB fill:#fffde7,stroke:#fbc02d,stroke-width:2px" />
-            </PendingDiffInfo>
-          </value>
-        </entry>
         <entry key="$PROJECT_DIR$/product-demoLogin/src/test/resources/application.properties">
           <value>
             <PendingDiffInfo>

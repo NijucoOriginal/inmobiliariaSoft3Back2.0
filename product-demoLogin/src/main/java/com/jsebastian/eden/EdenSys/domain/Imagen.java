@@ -10,7 +10,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
-@NotBlank
 @Getter
 @Setter
 @NoArgsConstructor

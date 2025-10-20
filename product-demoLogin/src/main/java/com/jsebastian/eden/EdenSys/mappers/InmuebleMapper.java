@@ -17,6 +17,7 @@ import java.util.UUID;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface InmuebleMapper {
     @Mapping(target = "departamento", source = "departamento")
+    @Mapping(target = "ciudad", source = "ciudad")
     @Mapping(target = "ubicacion", source = "ubicacion")
     @Mapping(target = "tipoNegocio", source = "tipoNegocio")
     @Mapping(target = "tipo", source = "tipo")
@@ -43,6 +44,7 @@ public interface InmuebleMapper {
     Inmueble toEntity(InmuebleDto dto);
 
     @Mapping(target = "departamento", source = "departamento")
+    @Mapping(target = "ciudad", source = "ciudad")
     @Mapping(target = "ubicacion", source = "ubicacion")
     @Mapping(target = "tipoNegocio", source = "tipoNegocio")
     @Mapping(target = "tipo", source = "tipo")
@@ -71,7 +73,7 @@ public interface InmuebleMapper {
                 .map(url -> {
                     Imagen imagen = new Imagen();
                     imagen.setUrl(url);
-                    imagen.setNombre(extraerNombre(url));
+                    imagen.setNombre(extraerNombreDeUrl(url));
                     imagen.setCodigoImagen(UUID.randomUUID().toString());
                     // La referencia al inmueble se establecerá después de crear la entidad
                     return imagen;
@@ -88,8 +90,9 @@ public interface InmuebleMapper {
                 .toList();
     }
 
-    // Utilidad opcional para obtener el nombre del archivo a partir de la URL
-    default String extraerNombre(String url) {
+    // Utilidad para obtener el nombre del archivo a partir de la URL
+    @Named("extraerNombreDeUrl")
+    default String extraerNombreDeUrl(String url) {
         if (url == null || !url.contains("/")) return "imagen_sin_nombre";
         return url.substring(url.lastIndexOf('/') + 1);
     }

@@ -7,7 +7,9 @@ import com.jsebastian.eden.EdenSys.domain.*;
 import com.jsebastian.eden.EdenSys.exceptions.InmuebleException;
 import com.jsebastian.eden.EdenSys.exceptions.ResourceNotFoundException;
 import com.jsebastian.eden.EdenSys.mappers.InmuebleMapper;
+import com.jsebastian.eden.EdenSys.repository.ClienteRepository;
 import com.jsebastian.eden.EdenSys.repository.InmuebleRepository;
+import com.jsebastian.eden.EdenSys.repository.UbicacionRepository;
 import com.jsebastian.eden.EdenSys.services.interfaces.InmuebleService;
 import com.jsebastian.eden.EdenSys.services.interfaces.UserService;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +18,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -26,12 +30,17 @@ public class InmuebleServiceImpl implements InmuebleService {
     @Autowired
     private InmuebleRepository inmuebleRepository;
     @Autowired
+    private ClienteRepository clienteRepository;
+    @Autowired
+    private UbicacionRepository ubicacionRepository;
+    @Autowired
     private InmuebleMapper inmuebleMapper;
     @Autowired
     private UserService userService;
 
 
     @Override
+    @Transactional
     public InmuebleResponse crearInmueble(InmuebleDto inmuebleDto) {
         try {
 
@@ -49,9 +58,13 @@ public class InmuebleServiceImpl implements InmuebleService {
                 // Convertir el DTO a entidad
                 var nuevoInmueble = inmuebleMapper.toEntity(inmuebleDto);
                 
-                // Establecer el propietario
-                Cliente propietario = new Cliente();
-                propietario.setId(userAux.getId());
+                // Guardar la ubicación primero si existe
+                if (nuevoInmueble.getUbicacion() != null) {
+                    nuevoInmueble.setUbicacion(ubicacionRepository.save(nuevoInmueble.getUbicacion()));
+                }
+                
+                // Buscar o crear cliente basado en el documento del usuario
+                Cliente propietario = obtenerOCrearCliente(userAux);
                 nuevoInmueble.setPropietario(propietario);
                 
                 // Establecer la referencia al inmueble en las imágenes
@@ -74,6 +87,32 @@ public class InmuebleServiceImpl implements InmuebleService {
         } catch (InmuebleException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Busca un cliente por documento de identidad, si no lo encuentra lo crea usando datos del usuario
+     * @param user Usuario del sistema
+     * @return Cliente existente o recién creado
+     */
+    private Cliente obtenerOCrearCliente(User user) {
+        // Buscar si ya existe un cliente con el mismo documento
+        Optional<Cliente> clienteExistente = clienteRepository.findByDocumentoIdentidad(user.getDocumentoIdentidad());
+        
+        if (clienteExistente.isPresent()) {
+            return clienteExistente.get();
+        }
+        
+        // Si no existe, crear un nuevo cliente con los datos del usuario
+        Cliente nuevoCliente = new Cliente();
+        nuevoCliente.setNombre(user.getNombre());
+        nuevoCliente.setApellido(user.getApellido());
+        nuevoCliente.setDocumentoIdentidad(user.getDocumentoIdentidad());
+        nuevoCliente.setEmail(user.getEmail());
+        nuevoCliente.setTelefono(user.getTelefono());
+        // Nota: La contraseña no se almacena en la tabla cliente
+        
+        // Guardar el nuevo cliente usando el repositorio
+        return clienteRepository.save(nuevoCliente);
     }
 
     @Override
