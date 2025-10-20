@@ -10,8 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -19,7 +17,7 @@ import java.util.List;
 @RequestMapping("/api/inmuebles")
 public class InmuebleController {
     private final InmuebleService inmuebleService;
-    /*@PostMapping
+    @PostMapping
     public ResponseEntity<?> crearInmueble(@Valid @RequestBody InmuebleDto inmuebleDto) {
         try {
             InmuebleResponse inmuebleResponse = inmuebleService.crearInmueble(inmuebleDto);
@@ -28,32 +26,6 @@ public class InmuebleController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: " + e.getMessage());
         }
     }
-
-     */
-
-    @PostMapping
-    public ResponseEntity<?> crearInmueble(
-            @RequestPart("inmuebleDto") @Valid InmuebleDto inmuebleDto,
-            @RequestPart(value = "imagenes", required = false) List<MultipartFile> imagenes,
-            @RequestPart(value = "documentosImportantes", required = false) List<MultipartFile> documentosImportantes
-    ) {
-        try
-        {
-            // Lógica del servicio: guardar archivos, asociarlos al inmueble, etc.
-            InmuebleResponse inmuebleResponse = inmuebleService.crearInmueble(inmuebleDto, imagenes, documentosImportantes);
-
-            return ResponseEntity.status(HttpStatus.CREATED).body(inmuebleResponse);
-        }
-        catch (ValueConflictException e)
-        {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: " + e.getMessage());
-        }
-        catch (Exception e)
-        {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno: " + e.getMessage());
-        }
-    }
-
 
     @GetMapping("/{id}")
     public ResponseEntity<?> obtenerInmueble(@PathVariable Long id) {
