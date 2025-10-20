@@ -12,9 +12,10 @@ import lombok.*;
 import java.util.List;
 
 
-@NotEmpty
-@NotBlank
 @Entity
+@RequiredArgsConstructor
+@Getter
+@Setter
 public class Cliente extends Persona {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

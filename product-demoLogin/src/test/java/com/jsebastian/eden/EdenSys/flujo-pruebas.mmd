@@ -1,0 +1,37 @@
+---
+title: Diagrama de flujo de pruebas unitarias y de integración
+---
+
+flowchart TD
+    subgraph Pruebas_Unitarias[Pruebas Unitarias]
+        A1[JUnit + Mockito]
+        A2[Test de Servicio<br/>UserServiceImplTest]
+        A3[Test de Controlador<br/>UserControllerUnitTest]
+
+        A1 --> A2
+        A1 --> A3
+        A2 -->|Mockea dependencias<br/>repos, mappers, email, encoder| B1[UserServiceImpl]
+        A3 -->|Mockea UserService| B2[UserController]
+        B1 -.->|No accede a BD real| X1
+        B2 -.->|No accede a BD real| X2
+    end
+
+    subgraph Pruebas_Integracion[Pruebas de Integración]
+        C1[Spring Boot Test<br/>+ TestContainers]
+        C2[Test de Repositorio<br/>UserRepositoryTest]
+        C3[Test de Controlador<br/>UserControllerIntegrationTest]
+
+        C1 --> C2
+        C1 --> C3
+        C2 -->|Acceso real a BD| D1[UserRepository]
+        C3 -->|Servicio real| D2[UserService]
+        D1 -->|Consulta/Inserta| DB[(PostgreSQL<br/>TestContainers)]
+        D2 --> D1
+    end
+
+%% Estilos
+    style Pruebas_Unitarias fill:#e0f7fa,stroke:#00796b,stroke-width:2px
+    style Pruebas_Integracion fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    style DB fill:#fffde7,stroke:#fbc02d,stroke-width:2px
+    style X1 fill:#ffffff,stroke:#ffffff,stroke-width:0px
+    style X2 fill:#ffffff,stroke:#ffffff,stroke-width:0px

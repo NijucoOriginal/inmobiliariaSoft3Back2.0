@@ -1,0 +1,39 @@
+### Un usuario ingrsa a su cuenta y postea un inmueble
+
+### El registro y la activacion han sido exitosos, ahora se puede loguear el usuario
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "jsebasjava31@gmail.com",
+  "contrasena": "Admin1234@"
+}
+
+### POST crear un nuevo inmueble en un user
+POST http://localhost:8080/api/inmuebles
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqc2ViYXNqYXZhMzFAZ21haWwuY29tIiwicm9sIjoiQ0xJRU5URSIsImlhdCI6MTc2MDk0MTczMCwiZXhwIjoxNzYxMDI4MTMwfQ.gAWljQRRurXoUh-X3F9jCy0T8E5wh65b_kIJKWLiOFI
+
+{
+  "departamento": "Antioquia",
+  "ciudad": "Medellín",
+  "ubicacion": {
+    "latitud": 6.2442,
+    "longitud": -75.5812
+  },
+  "tipoNegocio": "VENTA",
+  "tipo": "APARTAMENTO",
+  "medidas": 120.5,
+  "habitaciones": 3,
+  "banos": 2,
+  "descripcion": "Hermoso apartamento en el centro de la ciudad.",
+  "precio": 350000000,
+  "cantidadParqueaderos": 1,
+  "telfonoContacto": "3001234567",
+  "nombreContacto": "Juan Pérez",
+  "correoContacto": "jsebasjava31@gmail.com",
+  "imagenes": [
+    "https://example.com/imagen1.jpg",
+    "https://example.com/imagen2.jpg"
+  ]
+}
