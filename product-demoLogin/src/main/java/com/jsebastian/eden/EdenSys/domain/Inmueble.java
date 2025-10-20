@@ -1,6 +1,8 @@
 package com.jsebastian.eden.EdenSys.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import lombok.*;
@@ -23,9 +25,11 @@ public class Inmueble {
 
     //private String departamento;
 
-    @ManyToOne
+    /*@ManyToOne
     @JoinColumn(name = "ubicacion_id")
     private Ubicacion ubicacion;
+
+     */
 
     @Enumerated(EnumType.STRING)
     private TipoNegocio tipoNegocio;
@@ -34,8 +38,8 @@ public class Inmueble {
     @JoinColumn(name = "agente_asociado_id")
     private User agenteAsociado;
 
-    //@OneToMany(mappedBy = "inmueble", cascade = CascadeType.ALL)
-    private List<File> documentosImportantes;
+    @OneToMany(mappedBy = "inmueble", cascade = CascadeType.ALL)
+    private List<DocumentoImportante> documentosImportantes;
 
     @Enumerated(EnumType.STRING)
     private TipoInmueble tipo;
@@ -67,7 +71,7 @@ public class Inmueble {
 
     //private String ciudad;
 
-    private int codigoInmueble;
+    //private int codigoInmueble;
 
     @OneToMany(mappedBy = "inmueble", cascade = CascadeType.ALL)
     private List<HistorialInmueble> historial;
@@ -79,7 +83,7 @@ public class Inmueble {
     @Positive
     private int cantidadParqueaderos;
 
-    private String telfonoContacto;
+    private String telefonoContacto;
 
     private String nombreContacto;
 
@@ -91,4 +95,11 @@ public class Inmueble {
     @ManyToOne
     @JoinColumn(name = "propietario_id")
     private User propietario;
+
+    @Min(-90)
+    @Max(90)
+    private int latitud;
+    @Min(-180)
+    @Max(180)
+    private int longitud;
 }

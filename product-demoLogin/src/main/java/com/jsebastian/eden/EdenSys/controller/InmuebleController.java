@@ -7,6 +7,7 @@ import com.jsebastian.eden.EdenSys.exceptions.ValueConflictException;
 import com.jsebastian.eden.EdenSys.services.interfaces.InmuebleService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,14 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/inmuebles")
 public class InmuebleController {
+
+
+    @Value("${frontend.url}")
+    private String frontendUrl;
+
+    @Value("${frontend.local.url}")
+    private String frontendLocalUrl;
+
     private final InmuebleService inmuebleService;
     /*@PostMapping
     public ResponseEntity<?> crearInmueble(@Valid @RequestBody InmuebleDto inmuebleDto) {
@@ -30,14 +39,17 @@ public class InmuebleController {
     }
 
      */
-
-    @PostMapping
+    @PostMapping(consumes = {"multipart/form-data"})
     public ResponseEntity<?> crearInmueble(
             @RequestPart("inmuebleDto") @Valid InmuebleDto inmuebleDto,
             @RequestPart(value = "imagenes", required = false) List<MultipartFile> imagenes,
             @RequestPart(value = "documentosImportantes", required = false) List<MultipartFile> documentosImportantes,
             @RequestParam("correoUsuario") String correoUsuario
     ) {
+        System.out.println("DTO: " + inmuebleDto);
+        System.out.println("Imagenes: " + (imagenes != null ? imagenes.size() : "null"));
+        System.out.println("Documentos: " + (documentosImportantes != null ? documentosImportantes.size() : "null"));
+        System.out.println("Correo: " + correoUsuario);
         try
         {
             // Lógica del servicio: guardar archivos, asociarlos al inmueble, etc.

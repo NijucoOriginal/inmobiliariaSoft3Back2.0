@@ -16,9 +16,11 @@ import java.util.ArrayList;
 @Builder
 public class Inmobiliaria {
 
-    private ArrayList<Cliente> clientes;
+    private ArrayList<User> usuarios;
     private ArrayList<Inmueble> inmuebles;
-    private ArrayList<AgenteInmobiliario> agentes;
-    private ArrayList<AsesorLegal> asesoresLegales;
-    private Ubicacion ubicacion;
+    private ArrayList<User> agentes;
+    private ArrayList<User> asesoresLegales;
+    //private Ubicacion ubicacion;
+
+
 }

@@ -70,6 +70,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/activate/**").permitAll()
                         .requestMatchers("/api/auth/login").permitAll()
                         .requestMatchers("/api/usuarios/**").hasAuthority("CLIENTE")
+                        .requestMatchers("/api/inmuebles/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

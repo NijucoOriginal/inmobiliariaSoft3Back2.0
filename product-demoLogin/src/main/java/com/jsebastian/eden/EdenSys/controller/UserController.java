@@ -128,19 +128,7 @@ public class UserController {
         }
     }
 
-    /*@PutMapping("/actualizar/{email}")
-    public ResponseEntity<AuthResponse> actualizarUsuarioPorEmail(@PathVariable String email, @RequestBody CrearUsuarioDto user) {
-        try {
-            Optional<User> usuarioActualizado = userService.actualizarUsuarioEmail(email,user);
-            User usuario = usuarioActualizado.get();
-            String tokenNuevo=userService.generarToken(usuario);
-            return ResponseEntity.ok(new AuthResponse(tokenNuevo));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new AuthResponse(e.getMessage()));
-        }
-    }
 
-     */
 
     @PutMapping("/actualizar/{email}")
     public ResponseEntity<AuthResponse> actualizarUsuarioPorEmail(@PathVariable String email, @RequestBody CrearUsuarioDto user) {

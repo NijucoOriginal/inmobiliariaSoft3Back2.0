@@ -8,16 +8,20 @@ import java.util.List;
 public record InmuebleResponse(
     //@NotBlank(message = "El departamento es obligatorio")
     //String departamento,
-    @Valid @NotNull(message = "La ubicación es obligatoria")
-    Ubicacion ubicacion,
+    @Valid @NotNull(message = "La longitud es obligatoria")
+    int longitud,
+    @Valid @NotNull(message = "La latitud es obligatoria")
+    int latitud,
     @NotNull(message = "El tipo de negocio es obligatorio")
     TipoNegocio tipoNegocio,
     @Valid @NotNull(message = "El agente asociado es obligatorio")
     User agenteAsociado,
     @Valid @NotNull(message = "El agente asociado es obligatorio")
     User asesorLegal,
-    @Valid @NotNull(message = "La lista de documentos importantes es obligatoria")
+    /*@Valid @NotNull(message = "La lista de documentos importantes es obligatoria")
     List<DocumentoImportante> documentosImportantes,
+
+     */
     @NotNull(message = "El tipo de inmueble es obligatorio")
     TipoInmueble tipo,
     @Positive(message = "Las medidas deben ser mayores a 0")
@@ -36,19 +40,24 @@ public record InmuebleResponse(
     EstadoTransaccion estadoTransa,
     /*@NotBlank(message = "La ciudad es obligatoria")
     String ciudad,*/
-    @Positive(message = "El código del inmueble debe ser mayor a 0")
+   /* @Positive(message = "El código del inmueble debe ser mayor a 0")
     int codigoInmueble,
-    @Valid @NotNull(message = "El historial es obligatorio")
+
+    */
+    /*@Valid @NotNull(message = "El historial es obligatorio")
     List<HistorialInmueble> historial,
+     */
     @Min(value = 1, message = "Debe haber al menos un parqueadero")
     int cantidadParqueaderos,
     @NotBlank(message = "El teléfono de contacto es obligatorio")
-    String telfonoContacto,
+    String telefonoContacto,
     @NotBlank(message = "El nombre de contacto es obligatorio")
     String nombreContacto,
     @Email(message = "El correo debe tener un formato válido")
     @NotBlank(message = "El correo de contacto es obligatorio")
-    String correoContacto,
-    @Valid @NotNull(message = "La lista de imágenes es obligatoria")
+    String correoContacto
+    /*@Valid @NotNull(message = "La lista de imágenes es obligatoria")
     List<Imagen> imagenes
+
+     */
 ) {}

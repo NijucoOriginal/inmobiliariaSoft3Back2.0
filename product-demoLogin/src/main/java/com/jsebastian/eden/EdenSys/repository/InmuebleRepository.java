@@ -13,17 +13,17 @@ public interface InmuebleRepository extends JpaRepository<Inmueble, Long> {
     /**
      * Busca un inmueble por su código único
      */
-    Optional<Inmueble> findByCodigoInmueble(int codigoInmueble);
+    //Optional<Inmueble> findByCodigoInmueble(int codigoInmueble);
 
     /**
      * Verifica si existe un inmueble con el código especificado
      */
-    boolean existsByCodigoInmueble(int codigoInmueble);
+    //boolean existsByCodigoInmueble(int codigoInmueble);
 
     /**
      * Busca inmuebles por ciudad
      */
-    List<Inmueble> findByCiudad(String ciudad);
+    //List<Inmueble> findByCiudad(String ciudad);
 
     /**
      * Busca inmuebles por tipo de negocio

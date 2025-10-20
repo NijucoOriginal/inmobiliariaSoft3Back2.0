@@ -5,10 +5,7 @@ import com.jsebastian.eden.EdenSys.Dtos.InmueblePatchDto;
 import com.jsebastian.eden.EdenSys.Dtos.InmuebleResponse;
 import com.jsebastian.eden.EdenSys.domain.*;
 import com.jsebastian.eden.EdenSys.mappers.InmuebleMapper;
-import com.jsebastian.eden.EdenSys.repository.DocumentoImportanteRepository;
-import com.jsebastian.eden.EdenSys.repository.ImagenRepository;
-import com.jsebastian.eden.EdenSys.repository.InmuebleRepository;
-import com.jsebastian.eden.EdenSys.repository.UserRepository;
+import com.jsebastian.eden.EdenSys.repository.*;
 import com.jsebastian.eden.EdenSys.services.interfaces.InmuebleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +39,9 @@ public class InmuebleServiceImpl implements InmuebleService {
     @Autowired
     private DocumentoImportanteRepository documentoImportanteRepository;
 
+    @Autowired
+    private HistoriaInmuebleRepository historialInmuebleRepository;
+
 
 
     @Override
@@ -50,6 +50,8 @@ public class InmuebleServiceImpl implements InmuebleService {
                                           List<MultipartFile> documentosImportantes,
                                           String correoUsuario) {
         try {
+            User usuarioPropietario = userRepository.findByEmail(correoUsuario)
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
             Inmueble nuevoInmueble = inmuebleMapper.toEntity(inmuebleDto);
 
             User agenteMenorCarga = buscarAgenteConMenorCarga();
@@ -80,13 +82,21 @@ public class InmuebleServiceImpl implements InmuebleService {
                     documento.setNombreDocumento(doc.getOriginalFilename());
                     documento.setFechaExpedicion(LocalDateTime.now());
                     documento.setInmueble(nuevoInmueble);
-                    User usuarioPropietario = userRepository.findByEmail(correoUsuario)
-                            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
                     documento.setCliente(usuarioPropietario);
                     documentoImportanteRepository.save(documento);
                 }
             }
+
+            HistorialInmueble historial=new HistorialInmueble();
+            historial.setInmueble(nuevoInmueble);
+            historial.setPropietario(usuarioPropietario);
+            historial.setFechaInicio(LocalDateTime.now());
+            historial.setTipoNegocio(nuevoInmueble.getTipoNegocio());
+            historial.setPrecio(nuevoInmueble.getPrecio());
+            historial.setDescripcion(nuevoInmueble.getDescripcion());
+
+            historialInmuebleRepository.save(historial);
 
             nuevoInmueble = inmuebleRepository.save(nuevoInmueble);
             return inmuebleMapper.toResponse(nuevoInmueble);
@@ -212,6 +222,7 @@ public class InmuebleServiceImpl implements InmuebleService {
 
     @Override
     public InmuebleResponse patchInmueble(Long id, InmueblePatchDto patchDto) {
+        /*
         try {
             var inmueble = inmuebleRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Inmueble no encontrado con id: " + id));
@@ -266,6 +277,9 @@ public class InmuebleServiceImpl implements InmuebleService {
         } catch (Exception e) {
             throw new RuntimeException("Error al actualizar parcialmente el inmueble: " + e.getMessage(), e);
         }
+
+         */
+        return null;
     }
 
     @Override
