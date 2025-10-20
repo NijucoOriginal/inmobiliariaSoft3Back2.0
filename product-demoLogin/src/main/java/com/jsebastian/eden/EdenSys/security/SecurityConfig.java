@@ -2,6 +2,7 @@ package com.jsebastian.eden.EdenSys.security;
 
 import com.jsebastian.eden.EdenSys.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -25,6 +26,12 @@ import java.util.List;
 public class SecurityConfig {
 
     private final UserRepository userRepository; // inyectar repo para crear UserDetailsService
+
+    @Value("${frontend.url}")
+    private String frontendUrl;
+    
+    @Value("${frontend.local.url}")
+    private String frontendLocalUrl;
 
     @Bean
     public UserDetailsService userDetailsService() {
@@ -57,7 +64,7 @@ public class SecurityConfig {
         http
                 .cors(cors -> cors.configurationSource(request -> {
                     var corsConfig = new org.springframework.web.cors.CorsConfiguration();
-                    corsConfig.setAllowedOrigins(List.of("http://localhost:4200"));
+                    corsConfig.setAllowedOrigins(List.of(frontendUrl, frontendLocalUrl));
                     corsConfig.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     corsConfig.setAllowedHeaders(List.of("Authorization", "Content-Type"));
                     corsConfig.setAllowCredentials(true);
