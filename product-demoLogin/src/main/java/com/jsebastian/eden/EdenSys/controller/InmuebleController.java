@@ -28,17 +28,7 @@ public class InmuebleController {
     private String frontendLocalUrl;
 
     private final InmuebleService inmuebleService;
-    /*@PostMapping
-    public ResponseEntity<?> crearInmueble(@Valid @RequestBody InmuebleDto inmuebleDto) {
-        try {
-            InmuebleResponse inmuebleResponse = inmuebleService.crearInmueble(inmuebleDto);
-            return ResponseEntity.status(HttpStatus.CREATED).body(inmuebleResponse);
-        } catch (ValueConflictException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: " + e.getMessage());
-        }
-    }
 
-     */
     @PostMapping(consumes = {"multipart/form-data"})
     public ResponseEntity<?> crearInmueble(
             @RequestPart("inmuebleDto") @Valid InmuebleDto inmuebleDto,

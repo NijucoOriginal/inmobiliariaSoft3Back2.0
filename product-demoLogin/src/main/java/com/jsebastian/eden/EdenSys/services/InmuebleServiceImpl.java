@@ -50,6 +50,7 @@ public class InmuebleServiceImpl implements InmuebleService {
                                           List<MultipartFile> documentosImportantes,
                                           String correoUsuario) {
         try {
+            System.out.println("Aqui se jode todo");
             User usuarioPropietario = userRepository.findByEmail(correoUsuario)
                     .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
             Inmueble nuevoInmueble = inmuebleMapper.toEntity(inmuebleDto);

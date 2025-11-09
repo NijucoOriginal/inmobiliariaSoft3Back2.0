@@ -9,9 +9,9 @@ public record InmuebleResponse(
     //@NotBlank(message = "El departamento es obligatorio")
     //String departamento,
     @Valid @NotNull(message = "La longitud es obligatoria")
-    int longitud,
+    double longitud,
     @Valid @NotNull(message = "La latitud es obligatoria")
-    int latitud,
+    double latitud,
     @NotNull(message = "El tipo de negocio es obligatorio")
     TipoNegocio tipoNegocio,
     @Valid @NotNull(message = "El agente asociado es obligatorio")

@@ -23,14 +23,6 @@ public class Inmueble {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    //private String departamento;
-
-    /*@ManyToOne
-    @JoinColumn(name = "ubicacion_id")
-    private Ubicacion ubicacion;
-
-     */
-
     @Enumerated(EnumType.STRING)
     private TipoNegocio tipoNegocio;
 
@@ -98,8 +90,8 @@ public class Inmueble {
 
     @Min(-90)
     @Max(90)
-    private int latitud;
+    private double latitud;
     @Min(-180)
     @Max(180)
-    private int longitud;
+    private double longitud;
 }
