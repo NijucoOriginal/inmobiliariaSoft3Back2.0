@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
-@NotBlank
 @Getter
 @Setter
 @NoArgsConstructor
@@ -17,6 +16,7 @@ public class Imagen {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String url;
     
     @ManyToOne

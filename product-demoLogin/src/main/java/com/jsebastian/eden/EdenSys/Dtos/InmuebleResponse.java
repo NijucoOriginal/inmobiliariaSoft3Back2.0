@@ -3,61 +3,51 @@ package com.jsebastian.eden.EdenSys.Dtos;
 import com.jsebastian.eden.EdenSys.domain.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
+
 import java.util.List;
 
 public record InmuebleResponse(
-    //@NotBlank(message = "El departamento es obligatorio")
-    //String departamento,
-    @Valid @NotNull(message = "La longitud es obligatoria")
-    double longitud,
-    @Valid @NotNull(message = "La latitud es obligatoria")
-    double latitud,
-    @NotNull(message = "El tipo de negocio es obligatorio")
-    TipoNegocio tipoNegocio,
-    @Valid @NotNull(message = "El agente asociado es obligatorio")
-    User agenteAsociado,
-    @Valid @NotNull(message = "El agente asociado es obligatorio")
-    User asesorLegal,
-    /*@Valid @NotNull(message = "La lista de documentos importantes es obligatoria")
-    List<DocumentoImportante> documentosImportantes,
+        @NotNull Long id,
 
-     */
-    @NotNull(message = "El tipo de inmueble es obligatorio")
-    TipoInmueble tipo,
-    @Positive(message = "Las medidas deben ser mayores a 0")
-    double medidas,
-    @Positive(message = "El número de habitaciones debe ser mayor a 0")
-    int habitaciones,
-    @Positive(message = "El número de baños debe ser mayor a 0")
-    int banos,
-    @NotBlank(message = "La descripción es obligatoria")
-    String descripcion,
-    @NotNull(message = "El estado del inmueble es obligatorio")
-    EstadoInmueble estado,
-    @Positive(message = "El precio debe ser mayor a 0")
-    double precio,
-    @NotNull(message = "El estado de la transacción es obligatorio")
-    EstadoTransaccion estadoTransa,
-    /*@NotBlank(message = "La ciudad es obligatoria")
-    String ciudad,*/
-   /* @Positive(message = "El código del inmueble debe ser mayor a 0")
-    int codigoInmueble,
+        @NotNull TipoNegocio tipoNegocio,
 
-    */
-    /*@Valid @NotNull(message = "El historial es obligatorio")
-    List<HistorialInmueble> historial,
-     */
-    @Min(value = 1, message = "Debe haber al menos un parqueadero")
-    int cantidadParqueaderos,
-    @NotBlank(message = "El teléfono de contacto es obligatorio")
-    String telefonoContacto,
-    @NotBlank(message = "El nombre de contacto es obligatorio")
-    String nombreContacto,
-    @Email(message = "El correo debe tener un formato válido")
-    @NotBlank(message = "El correo de contacto es obligatorio")
-    String correoContacto
-    /*@Valid @NotNull(message = "La lista de imágenes es obligatoria")
-    List<Imagen> imagenes
+        @Valid @NotNull User agenteAsociado,
 
-     */
+        @Valid @NotNull User asesorLegal,
+
+        @Valid @NotNull User propietario,
+
+        @NotNull TipoInmueble tipo,
+
+        @Positive double medidas,
+
+        @Positive int habitaciones,
+
+        @Positive int banos,
+
+        @NotBlank String descripcion,
+
+        @NotNull EstadoInmueble estado,
+
+        @NotNull EstadoTransaccion estadoTransa,
+
+        @Positive double precio,
+
+        @Min(1) int cantidadParqueaderos,
+
+        @NotBlank String telefonoContacto,
+
+        @NotBlank String nombreContacto,
+
+        @Email @NotBlank String correoContacto,
+
+        @Min(-90) @Max(90) double latitud,
+
+        @Min(-180) @Max(180) double longitud,
+
+        @Valid @NotNull List<Imagen> imagenes,
+
+        @Valid @NotNull List<DocumentoImportante> documentosImportantes,
+
+        @Valid @NotNull List<HistorialInmueble> historial
 ) {}

@@ -14,7 +14,6 @@ import jakarta.persistence.JoinColumn;
 
 import java.time.LocalDateTime;
 
-@NotBlank
 @Getter
 @Setter
 @NoArgsConstructor

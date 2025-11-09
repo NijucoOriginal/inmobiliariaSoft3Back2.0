@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,9 +30,9 @@ public class InmuebleController {
 
     private final InmuebleService inmuebleService;
 
-    @PostMapping(consumes = {"multipart/form-data"})
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> crearInmueble(
-            @RequestPart("inmuebleDto") @Valid InmuebleDto inmuebleDto,
+            @ModelAttribute InmuebleDto inmuebleDto,
             @RequestPart(value = "imagenes", required = false) List<MultipartFile> imagenes,
             @RequestPart(value = "documentosImportantes", required = false) List<MultipartFile> documentosImportantes,
             @RequestParam("correoUsuario") String correoUsuario
@@ -40,19 +41,13 @@ public class InmuebleController {
         System.out.println("Imagenes: " + (imagenes != null ? imagenes.size() : "null"));
         System.out.println("Documentos: " + (documentosImportantes != null ? documentosImportantes.size() : "null"));
         System.out.println("Correo: " + correoUsuario);
-        try
-        {
-            // Lógica del servicio: guardar archivos, asociarlos al inmueble, etc.
-            InmuebleResponse inmuebleResponse = inmuebleService.crearInmueble(inmuebleDto, imagenes, documentosImportantes,correoUsuario);
 
+        try {
+            InmuebleResponse inmuebleResponse = inmuebleService.crearInmueble(inmuebleDto, imagenes, documentosImportantes, correoUsuario);
             return ResponseEntity.status(HttpStatus.CREATED).body(inmuebleResponse);
-        }
-        catch (ValueConflictException e)
-        {
+        } catch (ValueConflictException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: " + e.getMessage());
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno: " + e.getMessage());
         }
     }

@@ -4,11 +4,13 @@ import com.jsebastian.eden.EdenSys.Dtos.InmuebleDto;
 import com.jsebastian.eden.EdenSys.Dtos.InmueblePatchDto;
 import com.jsebastian.eden.EdenSys.Dtos.InmuebleResponse;
 import com.jsebastian.eden.EdenSys.domain.*;
+import com.jsebastian.eden.EdenSys.exceptions.ResourceNotFoundException;
 import com.jsebastian.eden.EdenSys.mappers.InmuebleMapper;
 import com.jsebastian.eden.EdenSys.repository.*;
 import com.jsebastian.eden.EdenSys.services.interfaces.InmuebleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,7 +20,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -41,7 +45,8 @@ public class InmuebleServiceImpl implements InmuebleService {
 
     @Autowired
     private HistoriaInmuebleRepository historialInmuebleRepository;
-
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
 
     @Override
@@ -49,43 +54,91 @@ public class InmuebleServiceImpl implements InmuebleService {
                                           List<MultipartFile> imagenes,
                                           List<MultipartFile> documentosImportantes,
                                           String correoUsuario) {
-        try {
-            System.out.println("Aqui se jode todo");
+        try
+        {
             User usuarioPropietario = userRepository.findByEmail(correoUsuario)
                     .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
             Inmueble nuevoInmueble = inmuebleMapper.toEntity(inmuebleDto);
+            nuevoInmueble.setPropietario(usuarioPropietario);
+            nuevoInmueble.setImagenes(new ArrayList<>());
+            nuevoInmueble.setDocumentosImportantes(new ArrayList<>());
+            nuevoInmueble.setHistorial(new ArrayList<>());
+
+            /*User agente=new User();
+            agente.setEmail("diegonicolaspenarincon@gmail.com");
+            agente.setRol(Rol.AGENTE);
+            String contrasena="password123";
+            agente.setContrasena(passwordEncoder.encode(contrasena));
+            agente.setNombre("Diego Penar");
+            agente.setApellido("Rincon");
+            agente.setTelefono("1234567890");
+            agente.setCodigoActivacion(null);
+            agente.setDocumentoIdentidad("0326479618668");
+            userRepository.save(agente);
+
+             */
+
+            /*User asesor=new User();
+            asesor.setEmail("hola@gmail.com");
+            asesor.setRol(Rol.ASESOR_LEGAL);
+            asesor.setContrasena(passwordEncoder.encode(contrasena));
+            asesor.setNombre("Diego Rinconp");
+            asesor.setApellido("Penar");
+            asesor.setTelefono("123456789011");
+            asesor.setCodigoActivacion(null);
+            asesor.setDocumentoIdentidad("55554444777");
+            userRepository.save(asesor);
+
+             */
 
             User agenteMenorCarga = buscarAgenteConMenorCarga();
             User asesorMenorCarga = buscarAsesorConMenorCarga();
+
             nuevoInmueble.setEstadoTransa(EstadoTransaccion.PENDIENTE);
             nuevoInmueble.setAgenteAsociado(agenteMenorCarga);
             nuevoInmueble.setAsesorLegal(asesorMenorCarga);
 
 
             // 4️⃣ Guardar las imágenes si existen
-            if (imagenes != null && !imagenes.isEmpty()) {
-                for (MultipartFile imagen : imagenes) {
-                    String ruta = guardarArchivo(imagen, "src/main/resources/imagenes",correoUsuario);
-                    Imagen img = new Imagen();
-                    img.setUrl(ruta);
-                    img.setInmueble(nuevoInmueble);
-                    // Guarda en tu repositorio de imágenes
-                    imagenRepository.save(img);
+            if (imagenes != null && !imagenes.isEmpty())
+             {
+                for (MultipartFile imagen : imagenes)
+                {
+                    try {
+                        String ruta = guardarArchivo(imagen, "src/main/resources/imagenes", correoUsuario);
+                        Imagen img = new Imagen();
+                        img.setUrl(ruta);
+                        img.setInmueble(nuevoInmueble);
+                        nuevoInmueble.getImagenes().add(img);
+                        System.out.println("Imagen agregada: " + ruta);
+                    } catch (Exception ex) {
+                        System.err.println("Error al guardar imagen: " + ex.getMessage());
+                        ex.printStackTrace();
+                    }
                 }
             }
 
             // 5️⃣ Guardar los documentos importantes si existen
-            if (documentosImportantes != null && !documentosImportantes.isEmpty()) {
-                for (MultipartFile doc : documentosImportantes) {
-                    String ruta = guardarArchivo(doc, "src/main/resources/documentosImportantes", nuevoInmueble.getCorreoContacto());
-                    DocumentoImportante documento = new DocumentoImportante();
-                    documento.setRutaArchivo(ruta);
-                    documento.setNombreDocumento(doc.getOriginalFilename());
-                    documento.setFechaExpedicion(LocalDateTime.now());
-                    documento.setInmueble(nuevoInmueble);
+            if (documentosImportantes != null && !documentosImportantes.isEmpty())
+            {
+                for (MultipartFile doc : documentosImportantes)
+                 {
+                     try
+                     {
+                         String ruta = guardarArchivo(doc, "src/main/resources/documentosImportantes", nuevoInmueble.getCorreoContacto());
+                         DocumentoImportante documento = new DocumentoImportante();
+                         documento.setRutaArchivo(ruta);
+                         documento.setNombreDocumento(doc.getOriginalFilename());
+                         documento.setFechaExpedicion(LocalDateTime.now());
+                         documento.setInmueble(nuevoInmueble);
+                         documento.setCliente(usuarioPropietario);
+                         nuevoInmueble.getDocumentosImportantes().add(documento);
+                     }
+                     catch (Exception ex) {
+                            System.err.println("Error al guardar documento importante: " + ex.getMessage());
+                            ex.printStackTrace();
+                     }
 
-                    documento.setCliente(usuarioPropietario);
-                    documentoImportanteRepository.save(documento);
                 }
             }
 
@@ -97,13 +150,18 @@ public class InmuebleServiceImpl implements InmuebleService {
             historial.setPrecio(nuevoInmueble.getPrecio());
             historial.setDescripcion(nuevoInmueble.getDescripcion());
 
-            historialInmuebleRepository.save(historial);
+            nuevoInmueble.getHistorial().add(historial);
+            System.out.println( nuevoInmueble.getHistorial().getFirst().getFechaInicio());
+            System.out.println( nuevoInmueble.getHistorial().getFirst().getFechaFin());
+            System.out.println(nuevoInmueble.getImagenes().getFirst().getUrl());
+
 
             nuevoInmueble = inmuebleRepository.save(nuevoInmueble);
             return inmuebleMapper.toResponse(nuevoInmueble);
 
-
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             throw new RuntimeException("Error al crear inmueble: " + e.getMessage(), e);
         }
     }
@@ -291,6 +349,28 @@ public class InmuebleServiceImpl implements InmuebleService {
             return inmuebleMapper.toResponse(inmueble);
         } catch (Exception e) {
             throw new RuntimeException("Error al obtener el inmueble: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public List<Inmueble> buscarInmueblesPorUsuario(String propietarioEmail) {
+        try
+        {
+            Optional<User> usuario=userRepository.findByEmail(propietarioEmail);
+
+            User propietario=usuario.orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+            List<Inmueble> inmuebles = inmuebleRepository.findAllByPropietario(propietario);
+
+            if (inmuebles.isEmpty())
+            {
+                throw new ResourceNotFoundException("No se encontraron inmuebles para el usuario con id: " + propietario.getId());
+            }
+            return inmuebles;
+        }
+        catch (Exception e)
+        {
+            throw new RuntimeException("Error al buscar inmuebles por propietario: " + e.getMessage(), e);
         }
     }
 

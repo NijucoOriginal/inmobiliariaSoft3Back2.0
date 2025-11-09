@@ -10,8 +10,6 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "documento_importante")
-@NotEmpty
-@NotBlank
 @Getter
 @Setter
 @NoArgsConstructor

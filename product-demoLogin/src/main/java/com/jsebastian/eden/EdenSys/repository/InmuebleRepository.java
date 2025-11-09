@@ -51,5 +51,9 @@ public interface InmuebleRepository extends JpaRepository<Inmueble, Long> {
      * Busca inmuebles en un rango de precio
      */
     List<Inmueble> findByPrecioBetween(double min, double max);
+
+    Optional<Inmueble> findInmuebleByPropietario(User propietario);
+
+    List<Inmueble> findAllByPropietario(User propietario);
 }
 

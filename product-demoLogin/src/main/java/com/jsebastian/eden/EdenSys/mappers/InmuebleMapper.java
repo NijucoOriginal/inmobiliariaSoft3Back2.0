@@ -8,13 +8,11 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface InmuebleMapper {
-    //@Mapping(target = "departamento", source = "departamento")
-    //@Mapping(target = "ubicacion", source = "ubicacion")
+
     @Mapping(target = "longitud", source = "longitud")
     @Mapping(target = "latitud", source = "latitud")
     @Mapping(target = "tipoNegocio", source = "tipoNegocio")
-    //@Mapping(target = "agenteAsociado", source = "agenteAsociado")
-    //@Mapping(target = "documentosImportantes", source = "documentosImportantes")
+
     @Mapping(target = "tipo", source = "tipo")
     @Mapping(target = "medidas", source = "medidas")
     @Mapping(target = "habitaciones", source = "habitaciones")
@@ -22,16 +20,11 @@ public interface InmuebleMapper {
     @Mapping(target = "descripcion", source = "descripcion")
     @Mapping(target = "estado", source = "estado")
     @Mapping(target = "precio", source = "precio")
-    //@Mapping(target = "estadoTransa", source = "estadoTransa")
-    //@Mapping(target = "ciudad", source = "ciudad")
-    //@Mapping(target = "codigoInmueble", source = "codigoInmueble")
-    //@Mapping(target = "historial", source = "historial")
-    //@Mapping(target = "asesorLegal", source = "asesorLegal")
+
     @Mapping(target = "cantidadParqueaderos", source = "cantidadParqueaderos")
     @Mapping(target = "telefonoContacto", source = "telefonoContacto")
     @Mapping(target = "nombreContacto", source = "nombreContacto")
     @Mapping(target = "correoContacto", source = "correoContacto")
-    //@Mapping(target = "imagenes", source = "imagenes")
     Inmueble toEntity(InmuebleDto dto);
 
     //@Mapping(target = "departamento", source = "departamento")

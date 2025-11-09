@@ -3,22 +3,29 @@ package com.jsebastian.eden.EdenSys.Dtos;
 import com.jsebastian.eden.EdenSys.domain.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
-import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-public record InmuebleDto(
-        @PositiveOrZero double longitud,
-        @PositiveOrZero double latitud,
-        @NotNull TipoNegocio tipoNegocio,
-        @NotNull TipoInmueble tipo,
-        @Positive double medidas,
-        @Positive int habitaciones,
-        @Positive int banos,
-        @NotBlank String descripcion,
-        @NotNull EstadoInmueble estado,
-        @Positive double precio,
-        @Min(1) int cantidadParqueaderos,
-        @NotBlank String telefonoContacto,
-        @NotBlank String nombreContacto,
-        @Email @NotBlank String correoContacto
-) {}
+@Getter
+@AllArgsConstructor
+@Setter
+@NoArgsConstructor
+public class InmuebleDto {
+    private double longitud;
+    private double latitud;
+    private TipoNegocio tipoNegocio;
+    private TipoInmueble tipo;
+    private double medidas;
+    private int habitaciones;
+    private int banos;
+    private String descripcion;
+    private EstadoInmueble estado;
+    private double precio;
+    private int cantidadParqueaderos;
+    private String telefonoContacto;
+    private String nombreContacto;
+    private String correoContacto;
+}
 

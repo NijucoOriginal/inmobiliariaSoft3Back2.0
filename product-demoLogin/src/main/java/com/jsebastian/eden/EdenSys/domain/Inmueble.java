@@ -30,8 +30,8 @@ public class Inmueble {
     @JoinColumn(name = "agente_asociado_id")
     private User agenteAsociado;
 
-    @OneToMany(mappedBy = "inmueble", cascade = CascadeType.ALL)
-    private List<DocumentoImportante> documentosImportantes;
+    @OneToMany(mappedBy = "inmueble", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DocumentoImportante> documentosImportantes= new ArrayList<>();;
 
     @Enumerated(EnumType.STRING)
     private TipoInmueble tipo;
@@ -65,8 +65,8 @@ public class Inmueble {
 
     //private int codigoInmueble;
 
-    @OneToMany(mappedBy = "inmueble", cascade = CascadeType.ALL)
-    private List<HistorialInmueble> historial;
+    @OneToMany(mappedBy = "inmueble", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<HistorialInmueble> historial= new ArrayList<>();;
 
     @ManyToOne
     @JoinColumn(name = "asesor_legal_id")
@@ -81,8 +81,8 @@ public class Inmueble {
 
     private String correoContacto;
 
-    @OneToMany(mappedBy = "inmueble", cascade = CascadeType.ALL)
-    private List<Imagen> imagenes;
+    @OneToMany(mappedBy = "inmueble", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Imagen> imagenes = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "propietario_id")
