@@ -5,8 +5,12 @@ import com.jsebastian.eden.EdenSys.Dtos.InmuebleDto;
 import com.jsebastian.eden.EdenSys.Dtos.InmuebleResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import com.jsebastian.eden.EdenSys.domain.Imagen;
 
-@Mapper(componentModel = "spring")
+@Mapper(
+        componentModel = "spring",
+        imports = {com.jsebastian.eden.EdenSys.domain.Imagen.class, java.util.stream.Collectors.class}
+)
 public interface InmuebleMapper {
 
     @Mapping(target = "longitud", source = "longitud")
@@ -27,13 +31,9 @@ public interface InmuebleMapper {
     @Mapping(target = "correoContacto", source = "correoContacto")
     Inmueble toEntity(InmuebleDto dto);
 
-    //@Mapping(target = "departamento", source = "departamento")
-    //@Mapping(target = "ubicacion", source = "ubicacion")
     @Mapping(target = "longitud", source = "longitud")
     @Mapping(target = "latitud", source = "latitud")
     @Mapping(target = "tipoNegocio", source = "tipoNegocio")
-    @Mapping(target = "agenteAsociado", source = "agenteAsociado")
-    //@Mapping(target = "documentosImportantes", source = "documentosImportantes")
     @Mapping(target = "tipo", source = "tipo")
     @Mapping(target = "medidas", source = "medidas")
     @Mapping(target = "habitaciones", source = "habitaciones")
@@ -42,16 +42,15 @@ public interface InmuebleMapper {
     @Mapping(target = "estado", source = "estado")
     @Mapping(target = "precio", source = "precio")
     @Mapping(target = "estadoTransa", source = "estadoTransa")
-    //@Mapping(target = "ciudad", source = "ciudad")
-    //@Mapping(target = "codigoInmueble", source = "codigoInmueble")
-    //@Mapping(target = "historial", source = "historial")
-    //@Mapping(target = "asesorLegal", source = "asesorLegal") Por regla de negocio el asesor legal no se asigna en la creacion
+    @Mapping(target = "asesorLegal", expression = "java(entity.getAsesorLegal() != null ? entity.getAsesorLegal().getId() : null)")
+    @Mapping(target = "agenteAsociado", expression = "java(entity.getAgenteAsociado() != null ? entity.getAgenteAsociado().getId() : null)")
     @Mapping(target = "cantidadParqueaderos", source = "cantidadParqueaderos")
     @Mapping(target = "telefonoContacto", source = "telefonoContacto")
     @Mapping(target = "nombreContacto", source = "nombreContacto")
     @Mapping(target = "correoContacto", source = "correoContacto")
-    //@Mapping(target = "imagenes", source = "imagenes")
+    @Mapping(target = "imagenes", expression = "java(entity.getImagenes().stream().map(Imagen::getUrl).toList())")
     InmuebleResponse toResponse(Inmueble entity);
+
 
     // Método utilitario para actualizar los campos de una entidad Inmueble existente con los valores de un InmuebleDto.
     void updateEntityFromDto(InmuebleDto dto, @org.mapstruct.MappingTarget com.jsebastian.eden.EdenSys.domain.Inmueble entity);

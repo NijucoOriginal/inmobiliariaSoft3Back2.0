@@ -7,6 +7,7 @@ import com.jsebastian.eden.EdenSys.domain.*;
 import com.jsebastian.eden.EdenSys.exceptions.ResourceNotFoundException;
 import com.jsebastian.eden.EdenSys.mappers.InmuebleMapper;
 import com.jsebastian.eden.EdenSys.repository.*;
+import com.jsebastian.eden.EdenSys.services.interfaces.ImagenService;
 import com.jsebastian.eden.EdenSys.services.interfaces.InmuebleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,15 +39,10 @@ public class InmuebleServiceImpl implements InmuebleService {
     private  UserRepository userRepository;
 
     @Autowired
-    private ImagenRepository imagenRepository;
-
-    @Autowired
-    private DocumentoImportanteRepository documentoImportanteRepository;
-
-    @Autowired
-    private HistoriaInmuebleRepository historialInmuebleRepository;
-    @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private ImagenService imagenService;
 
 
     @Override
@@ -104,14 +100,17 @@ public class InmuebleServiceImpl implements InmuebleService {
              {
                 for (MultipartFile imagen : imagenes)
                 {
-                    try {
-                        String ruta = guardarArchivo(imagen, "src/main/resources/imagenes", correoUsuario);
+                    try
+                    {
+                        String ruta = imagenService.subirImagen(imagen);
                         Imagen img = new Imagen();
                         img.setUrl(ruta);
                         img.setInmueble(nuevoInmueble);
                         nuevoInmueble.getImagenes().add(img);
                         System.out.println("Imagen agregada: " + ruta);
-                    } catch (Exception ex) {
+                    }
+                    catch (Exception ex)
+                    {
                         System.err.println("Error al guardar imagen: " + ex.getMessage());
                         ex.printStackTrace();
                     }
@@ -157,6 +156,7 @@ public class InmuebleServiceImpl implements InmuebleService {
 
 
             nuevoInmueble = inmuebleRepository.save(nuevoInmueble);
+
             return inmuebleMapper.toResponse(nuevoInmueble);
 
         }
@@ -353,7 +353,7 @@ public class InmuebleServiceImpl implements InmuebleService {
     }
 
     @Override
-    public List<Inmueble> buscarInmueblesPorUsuario(String propietarioEmail) {
+    public List<InmuebleResponse> buscarInmueblesPorUsuario(String propietarioEmail) {
         try
         {
             Optional<User> usuario=userRepository.findByEmail(propietarioEmail);
@@ -366,7 +366,7 @@ public class InmuebleServiceImpl implements InmuebleService {
             {
                 throw new ResourceNotFoundException("No se encontraron inmuebles para el usuario con id: " + propietario.getId());
             }
-            return inmuebles;
+            return inmuebles.stream().map(inmuebleMapper::toResponse).toList();
         }
         catch (Exception e)
         {
@@ -376,10 +376,18 @@ public class InmuebleServiceImpl implements InmuebleService {
 
     @Override
     public List<InmuebleResponse> obtenerListaDeInmuebles() {
-        try {
-            var lista = inmuebleRepository.findAll();
+        try
+        {
+            List<EstadoTransaccion> estados=new ArrayList<>();
+            estados.add(EstadoTransaccion.ALQUILADO);
+            estados.add(EstadoTransaccion.PERMUTADO);
+            estados.add(EstadoTransaccion.VENDIDO);
+            estados.add(EstadoTransaccion.PENDIENTE);
+            var lista = inmuebleRepository.findByEstadoTransaNotIn(estados);
             return lista.stream().map(inmuebleMapper::toResponse).toList();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             throw new RuntimeException("Error al obtener la lista de inmuebles: " + e.getMessage(), e);
         }
     }

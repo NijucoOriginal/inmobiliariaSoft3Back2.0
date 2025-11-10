@@ -50,10 +50,6 @@ public class Inmueble {
     @Enumerated(EnumType.STRING)
     private EstadoInmueble estado;
 
-    /*@Enumerated(EnumType.STRING)
-    private EstadoPosteoInmueble estadoPosteoInmueble;
-
-     */
 
     @Positive
     private double precio;
@@ -61,9 +57,6 @@ public class Inmueble {
     @Enumerated(EnumType.STRING)
     private EstadoTransaccion estadoTransa;
 
-    //private String ciudad;
-
-    //private int codigoInmueble;
 
     @OneToMany(mappedBy = "inmueble", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<HistorialInmueble> historial= new ArrayList<>();;

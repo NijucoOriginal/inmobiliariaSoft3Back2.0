@@ -53,11 +53,23 @@ public class InmuebleController {
     }
 
 
-    @GetMapping("/{id}")
+    /*@GetMapping("/{id}")
     public ResponseEntity<?> obtenerInmueble(@PathVariable Long id) {
         try {
             InmuebleResponse response = inmuebleService.obtenerInmueble(id);
             return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: " + e.getMessage());
+        }
+    }
+
+     */
+
+    @GetMapping("/{email}")
+    public ResponseEntity<?> obtenerInmuebles(@PathVariable String email) {
+        try {
+            List<InmuebleResponse> listaInmueblesUsuario = inmuebleService.buscarInmueblesPorUsuario(email);
+            return ResponseEntity.ok(listaInmueblesUsuario);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: " + e.getMessage());
         }
@@ -98,4 +110,6 @@ public class InmuebleController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: " + e.getMessage());
         }
     }
+
+
 }

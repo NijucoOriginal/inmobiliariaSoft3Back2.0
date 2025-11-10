@@ -57,8 +57,7 @@ public class AuthController {
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
         try {
             String token = userService.validarCredencialesYGenerarToken(request.email(), request.contrasena());
-            List<Inmueble> listaImuebles=inmuebleService.buscarInmueblesPorUsuario(request.email());
-            return ResponseEntity.ok(new AuthResponse(token,listaImuebles));
+            return ResponseEntity.ok(new AuthResponse(token));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new AuthResponse(e.getMessage()));
         }

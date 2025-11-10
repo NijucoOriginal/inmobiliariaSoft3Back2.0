@@ -3,7 +3,6 @@ package com.jsebastian.eden.EdenSys.services.interfaces;
 import com.jsebastian.eden.EdenSys.Dtos.InmuebleDto;
 import com.jsebastian.eden.EdenSys.Dtos.InmueblePatchDto;
 import com.jsebastian.eden.EdenSys.Dtos.InmuebleResponse;
-import com.jsebastian.eden.EdenSys.domain.Inmueble;
 import com.jsebastian.eden.EdenSys.domain.User;
 import com.jsebastian.eden.EdenSys.exceptions.ValueConflictException;
 import jakarta.validation.Valid;
@@ -23,7 +22,7 @@ public interface InmuebleService {
     InmuebleResponse patchInmueble(Long id, InmueblePatchDto patchDto);
     InmuebleResponse obtenerInmueble(Long id);
 
-    List<Inmueble> buscarInmueblesPorUsuario(String propietarioEmail);
+    List<InmuebleResponse> buscarInmueblesPorUsuario(String propietarioEmail);
 
     List<InmuebleResponse> obtenerListaDeInmuebles();
 
