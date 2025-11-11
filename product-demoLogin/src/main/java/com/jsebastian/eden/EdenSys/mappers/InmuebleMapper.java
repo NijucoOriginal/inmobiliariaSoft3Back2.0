@@ -49,6 +49,7 @@ public interface InmuebleMapper {
     @Mapping(target = "nombreContacto", source = "nombreContacto")
     @Mapping(target = "correoContacto", source = "correoContacto")
     @Mapping(target = "imagenes", expression = "java(entity.getImagenes().stream().map(Imagen::getUrl).toList())")
+    @Mapping(target = "id", source = "id")
     InmuebleResponse toResponse(Inmueble entity);
 
 

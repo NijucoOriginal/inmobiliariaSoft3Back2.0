@@ -72,9 +72,9 @@ public class InmuebleServiceImpl implements InmuebleService {
             agente.setDocumentoIdentidad("0326479618668");
             userRepository.save(agente);
 
-             */
 
-            /*User asesor=new User();
+
+            User asesor=new User();
             asesor.setEmail("hola@gmail.com");
             asesor.setRol(Rol.ASESOR_LEGAL);
             asesor.setContrasena(passwordEncoder.encode(contrasena));
@@ -86,6 +86,7 @@ public class InmuebleServiceImpl implements InmuebleService {
             userRepository.save(asesor);
 
              */
+
 
             User agenteMenorCarga = buscarAgenteConMenorCarga();
             User asesorMenorCarga = buscarAsesorConMenorCarga();
@@ -280,6 +281,26 @@ public class InmuebleServiceImpl implements InmuebleService {
     }
 
     @Override
+    public InmuebleResponse actualizarEstadoTransaInmueble(String estadoTransa, Long id) {
+        try
+        {
+            Inmueble inmuebleMandar=inmuebleRepository.findInmuebleById(id);
+
+            inmuebleMandar.setEstadoTransa(EstadoTransaccion.valueOf(estadoTransa));
+
+            System.out.println(inmuebleMandar.getEstadoTransa());
+
+            inmuebleRepository.save(inmuebleMandar);
+
+            return inmuebleMapper.toResponse(inmuebleMandar);
+        }
+        catch (Exception e)
+        {
+            throw new RuntimeException(e.getMessage(), e);
+        }
+    }
+
+    @Override
     public InmuebleResponse patchInmueble(Long id, InmueblePatchDto patchDto) {
         /*
         try {
@@ -373,6 +394,73 @@ public class InmuebleServiceImpl implements InmuebleService {
             throw new RuntimeException("Error al buscar inmuebles por propietario: " + e.getMessage(), e);
         }
     }
+
+
+    @Override
+    public List<InmuebleResponse> buscarInmueblesPorAgente(String emailAgente) {
+        try
+        {
+            Optional<User> usuario=userRepository.findByEmail(emailAgente);
+
+            User agenteAsociado=usuario.orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+            List<Inmueble> inmuebles = inmuebleRepository.findInmueblesByAgenteAsociado(agenteAsociado);
+
+            if (inmuebles.isEmpty())
+            {
+                throw new ResourceNotFoundException("No se encontraron inmuebles para el usuario con id: " + agenteAsociado.getId());
+            }
+            return inmuebles.stream().map(inmuebleMapper::toResponse).toList();
+        }
+        catch (Exception e)
+        {
+            throw new RuntimeException("Error al buscar inmuebles por agente: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public InmuebleResponse buscarInmueblePorAgente(String emailAgente) {
+        try
+        {
+            Optional<User> usuario=userRepository.findByEmail(emailAgente);
+
+            User agenteAsociado=usuario.orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+            Optional<Inmueble> inmuebleAsociado=inmuebleRepository.findInmuebleByAgenteAsociado(agenteAsociado);
+
+            Inmueble inmuebleMandar=inmuebleAsociado.orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+            return inmuebleMapper.toResponse(inmuebleMandar);
+        }
+        catch (Exception e)
+        {
+            throw new RuntimeException("Error al buscar inmueble por agente: " + e.getMessage(), e);
+        }
+
+    }
+
+    @Override
+    public Inmueble buscarInmueblePorAgenteSinResponse(String emailAgente) {
+        try
+        {
+
+            Optional<User> usuario=userRepository.findByEmail(emailAgente);
+
+            User agenteAsociado=usuario.orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+
+            Optional<Inmueble> inmuebleAsociado=inmuebleRepository.findInmuebleByAgenteAsociado(agenteAsociado);
+
+            System.out.println("Llega hasta aqui 2");
+
+            return inmuebleAsociado.orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        }
+        catch (Exception e)
+        {
+            throw new RuntimeException("Error al buscar inmueble por agente: " + e.getMessage(), e);
+        }
+
+    }
+
 
     @Override
     public List<InmuebleResponse> obtenerListaDeInmuebles() {

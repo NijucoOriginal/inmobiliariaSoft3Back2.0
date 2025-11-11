@@ -54,8 +54,14 @@ public interface InmuebleRepository extends JpaRepository<Inmueble, Long> {
 
     Optional<Inmueble> findInmuebleByPropietario(User propietario);
 
+    Optional<Inmueble> findInmuebleByAgenteAsociado(User agenteAsociado);
+
     List<Inmueble> findAllByPropietario(User propietario);
 
     List<Inmueble> findByEstadoTransaNotIn(List<EstadoTransaccion> estados);
+
+    List<Inmueble> findInmueblesByAgenteAsociado(User agenteAsociado);
+
+    Inmueble findInmuebleById(Long id);
 }
 

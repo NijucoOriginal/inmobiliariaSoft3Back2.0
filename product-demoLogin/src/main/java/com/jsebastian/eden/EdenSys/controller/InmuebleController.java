@@ -81,11 +81,33 @@ public class InmuebleController {
         return ResponseEntity.ok(lista);
     }
 
+    @GetMapping("/agente/{email}")
+    public ResponseEntity<?> obtenerInmueblesPorAgente(@PathVariable String email) {
+        try {
+            List<InmuebleResponse> listaInmueblesAgente = inmuebleService.buscarInmueblesPorAgente(email);
+            return ResponseEntity.ok(listaInmueblesAgente);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: " + e.getMessage());
+        }
+    }
+
+
     @PutMapping("/{id}")
     public ResponseEntity<?> actualizarInmueble(@PathVariable Long id, @Valid @RequestBody InmuebleDto inmuebleDto) {
         try {
             InmuebleResponse response = inmuebleService.actualizarInmueble(id, inmuebleDto);
             return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: " + e.getMessage());
+        }
+    }
+
+    @PutMapping("/agente/{estadoTransa}/{id}")
+    public ResponseEntity<?> actualizarInmuebleEstadoTransa(@PathVariable String estadoTransa, @PathVariable Long id) {
+        try {
+            System.out.println("Llega hasta aqui");
+            InmuebleResponse inmueble = inmuebleService.actualizarEstadoTransaInmueble(estadoTransa, id);
+            return ResponseEntity.ok(inmueble);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: " + e.getMessage());
         }
