@@ -3,12 +3,30 @@
   <component name="CopilotDiffPersistence">
     <option name="pendingDiffs">
       <map>
+        <entry key="$PROJECT_DIR$/product-demoLogin/src/main/java/com/jsebastian/eden/EdenSys/exceptions/InmuebleException.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/product-demoLogin/src/main/java/com/jsebastian/eden/EdenSys/exceptions/InmuebleException.java" />
+              <option name="originalContent" value="package com.jsebastian.eden.EdenSys.exceptions;&#10;&#10;public class InmuebleException extends RuntimeException {&#10;    public InmuebleException(String message) {&#10;        super(message);&#10;    }&#10;&#10;    public InmuebleException(String message, Throwable cause) {&#10;        super(message, cause);&#10;    }&#10;&#10;    public InmuebleException(Throwable cause) {&#10;        super(cause);&#10;    }&#10;}" />
+              <option name="updatedContent" value="package com.jsebastian.eden.EdenSys.exceptions;&#10;&#10;public class InmuebleException extends RuntimeException {&#10;    public InmuebleException(String message) {&#10;        super(message);&#10;    }&#10;&#10;    public InmuebleException(String message, Throwable cause) {&#10;        super(message, cause);&#10;    }&#10;&#10;    public InmuebleException(Throwable cause) {&#10;        super(cause);&#10;    }&#10;}" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/product-demoLogin/src/main/java/com/jsebastian/eden/EdenSys/services/InmuebleService.java">
           <value>
             <PendingDiffInfo>
               <option name="filePath" value="$PROJECT_DIR$/product-demoLogin/src/main/java/com/jsebastian/eden/EdenSys/services/InmuebleService.java" />
               <option name="originalContent" value="package com.jsebastian.eden.EdenSys.services;&#10;&#10;import com.jsebastian.eden.EdenSys.Dtos.InmuebleDto;&#10;import com.jsebastian.eden.EdenSys.Dtos.InmuebleResponse;&#10;import com.jsebastian.eden.EdenSys.exceptions.ValueConflictException;&#10;&#10;public interface InmuebleService {&#10;    InmuebleResponse crearInmueble(InmuebleDto inmuebleDto) throws ValueConflictException;&#10;}&#10;" />
               <option name="updatedContent" value="package com.jsebastian.eden.EdenSys.services;&#10;&#10;import com.jsebastian.eden.EdenSys.Dtos.InmuebleDto;&#10;import com.jsebastian.eden.EdenSys.Dtos.InmuebleResponse;&#10;import com.jsebastian.eden.EdenSys.exceptions.ValueConflictException;&#10;&#10;public interface InmuebleService {&#10;    InmuebleResponse crearInmueble(InmuebleDto inmuebleDto) throws ValueConflictException;&#10;}&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/product-demoLogin/src/test/resources/application.properties">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/product-demoLogin/src/test/resources/application.properties" />
+              <option name="originalContent" value="# Test properties&#10;sendgrid.from.email=test@example.com&#10;sendgrid.from.name=Test Sender&#10;jwt.secret=testSecretKeyForTestingPurposesOnly&#10;frontend.url=http://localhost&#10;frontend.local.url=http://localhost:3000" />
+              <option name="updatedContent" value="# Test properties&#10;sendgrid.from.email=test@example.com&#10;sendgrid.from.name=Test Sender&#10;jwt.secret=testSecretKeyForTestingPurposesOnly&#10;frontend.url=http://localhost&#10;frontend.local.url=http://localhost:3000" />
             </PendingDiffInfo>
           </value>
         </entry>
