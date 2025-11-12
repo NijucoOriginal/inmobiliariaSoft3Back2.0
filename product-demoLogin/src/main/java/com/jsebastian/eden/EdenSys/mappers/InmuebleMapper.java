@@ -6,6 +6,11 @@ import com.jsebastian.eden.EdenSys.Dtos.InmuebleResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import com.jsebastian.eden.EdenSys.domain.Imagen;
+import com.jsebastian.eden.EdenSys.Dtos.InmuebleAsignadoResponse;
+import com.jsebastian.eden.EdenSys.Dtos.CambioEstadoResponse;
+import com.jsebastian.eden.EdenSys.Dtos.ClienteAsociadoResponse;
+import com.jsebastian.eden.EdenSys.domain.User;
+import java.time.LocalDateTime;
 
 @Mapper(
         componentModel = "spring",
@@ -55,4 +60,18 @@ public interface InmuebleMapper {
 
     // Método utilitario para actualizar los campos de una entidad Inmueble existente con los valores de un InmuebleDto.
     void updateEntityFromDto(InmuebleDto dto, @org.mapstruct.MappingTarget com.jsebastian.eden.EdenSys.domain.Inmueble entity);
+
+    InmuebleAsignadoResponse toInmuebleAsignadoResponse(com.jsebastian.eden.EdenSys.domain.Inmueble entity);
+
+    default CambioEstadoResponse toCambioEstadoResponse(com.jsebastian.eden.EdenSys.domain.Inmueble entity, String estadoAnterior, String estadoNuevo, LocalDateTime fecha){
+        return new CambioEstadoResponse(entity.getId(), estadoAnterior, estadoNuevo, "Estado actualizado correctamente", fecha);
+    }
+
+    default ClienteAsociadoResponse toClienteAsociadoResponse(User cliente){
+        if(cliente == null){
+            return new ClienteAsociadoResponse(null, null, null, null);
+        }
+        String nombreCompleto = cliente.getNombre()+" "+cliente.getApellido();
+        return new ClienteAsociadoResponse(cliente.getId(), nombreCompleto, cliente.getEmail(), cliente.getTelefono());
+    }
 }

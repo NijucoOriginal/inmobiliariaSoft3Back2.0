@@ -1,0 +1,97 @@
+prompt:
+  nombre_proceso: "Negociación y Gestión de Inmuebles"
+  descripcion_general: >
+    Flujo para cargar inmuebles asignados a un agente y cambiar su estado de transacción.
+    Usa arquitectura por capas existente y roles del sistema. IDs tipo Long, estados reales del enum EstadoTransaccion.
+
+  entorno:
+    base_datos: "Neon Postgres"
+    variables_entorno: ["DB_URL","DB_USER","DB_PASSWORD","JWT_SECRET","MAIL_API_KEY"]
+    seguridad:
+      tipo: "JWT (HMAC-SHA256)"
+      gestion_token: "JwtService"
+    configuracion_cors:
+      descripcion: "CORS habilitado para frontend"
+      origenes_permitidos: ["http://localhost:4200","https://inmobiliaria.com"]
+
+  estructura_backend:
+    controller:
+      archivo: "ControllerNegociacionInmuebles.java"
+      ruta: "/api/inmuebles/negociacion"
+      descripcion: "Endpoints de negociación restringidos a rol AGENTE"
+      metodos_http:
+        - nombre: "cargarInmueblesAsignados"
+          metodo: "GET"
+          endpoint: "/asignados"
+          response: "List<InmuebleAsignadoResponse>"
+          validaciones: ["Rol AGENTE","Token JWT válido"]
+        - nombre: "cambiarEstadoTransaccion"
+          metodo: "PUT"
+          endpoint: "/{id}/estado"
+          request: "CambiarEstadoInmuebleRequest"
+          response: "CambioEstadoResponse"
+          validaciones: ["Pertenece al agente","Transición permitida","Estado válido"]
+        - nombre: "obtenerCliente"
+          metodo: "GET"
+          endpoint: "/{id}/cliente"
+          response: "ClienteAsociadoResponse"
+          validaciones: ["Inmueble existe"]
+
+    dto:
+      request:
+        - nombre: "CambiarEstadoInmuebleRequest"
+          campos: ["Long inmuebleId","String nuevoEstado","String comentario"]
+          validaciones: ["@NotNull inmuebleId","@NotBlank nuevoEstado","Enum EstadoTransaccion"]
+      response:
+        - nombre: "InmuebleAsignadoResponse"
+          campos: ["Long id","String descripcion","String tipo","String estadoActual","Double precio"]
+        - nombre: "CambioEstadoResponse"
+          campos: ["Long inmuebleId","String estadoAnterior","String estadoNuevo","String mensaje","LocalDateTime fechaActualizacion"]
+        - nombre: "ClienteAsociadoResponse"
+          campos: ["Long clienteId","String nombreCompleto","String correo","String telefono"]
+
+    domain:
+      entidades:
+        - nombre: "Inmueble"
+          fuente: "Inmueble.java existente"
+          campos_clave: ["Long id","String descripcion","TipoInmueble tipo","EstadoTransaccion estadoTransa","User agenteAsociado","Double precio","User propietario"]
+        - nombre: "TransaccionInmueble"
+          fuente: "TransaccionInmueble.java"
+          campos: ["Long id","EstadoTransaccion estadoAnterior","EstadoTransaccion estadoActual","LocalDateTime fechaActualizacion","Inmueble inmueble","User cliente","String comentarioAgente"]
+        - nombre: "EstadoTransaccion"
+          valores: ["PENDIENTE","PROCESOCOMPRA","PROCESOALQUIER","PROCESOPERMUTACION","VENDIDO","ALQUILADO","PERMUTADO","NOADMITIDA"]
+
+    mapper:
+      archivo: "InmuebleMapper.java"
+      metodos_nuevos: ["InmuebleAsignadoResponse toInmuebleAsignadoResponse(Inmueble)","CambioEstadoResponse toCambioEstadoResponse(Inmueble, String, String, LocalDateTime)","ClienteAsociadoResponse toClienteAsociadoResponse(User)"]
+
+    repository:
+      archivos: ["InmuebleRepository.java","TransaccionInmuebleRepository.java"]
+      metodos_usados: ["List<Inmueble> findByAgenteAsociado(User)","Optional<Inmueble> findById(Long)","Optional<TransaccionInmueble> findByInmueble_Id(Long)"]
+
+    service:
+      interfaces: ["NegociacionInmuebleService"]
+      metodos: ["List<InmuebleAsignadoResponse> obtenerInmueblesAsignados(Long)","CambioEstadoResponse cambiarEstadoInmueble(Long, CambiarEstadoInmuebleRequest, Long)","ClienteAsociadoResponse obtenerClienteAsociado(Long)"]
+      implementacion: "NegociacionInmuebleServiceImpl"
+      reglas_negocio: [
+        "Solo rol AGENTE accede",
+        "Transiciones permitidas según mapa",
+        "Registrar historial en TransaccionInmueble",
+        "Validar pertenencia del inmueble al agente"
+      ]
+      transiciones_permitidas:
+        PENDIENTE: ["PROCESOCOMPRA","PROCESOALQUIER","PROCESOPERMUTACION"]
+        PROCESOCOMPRA: ["VENDIDO","NOADMITIDA"]
+        PROCESOALQUIER: ["ALQUILADO","NOADMITIDA"]
+        PROCESOPERMUTACION: ["PERMUTADO","NOADMITIDA"]
+
+    infra:
+      excepciones: ["InmuebleNotFoundException","UnauthorizedAccessException","EstadoInvalidoException"]
+      handler_global: "GlobalExceptionHandler actualizado"
+
+    seguridad:
+      filtro_jwt: "JwtAuthenticationFilter"
+      configuracion: "SecurityConfig: /api/inmuebles/negociacion/** requiere autoridad AGENTE"
+
+  entorno_pruebas:
+    pendientes: ["Crear tests unitarios para flujos principales","Simular transiciones inválidas"]

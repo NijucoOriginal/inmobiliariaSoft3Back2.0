@@ -71,6 +71,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/login").permitAll()
                         .requestMatchers("/api/usuarios/**").hasAuthority("CLIENTE")
                         .requestMatchers("/api/inmuebles/**").permitAll()
+                        .requestMatchers("/api/inmuebles/negociacion/**").hasAuthority("AGENTE")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
