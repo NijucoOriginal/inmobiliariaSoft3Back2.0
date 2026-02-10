@@ -1,6 +1,7 @@
 package com.jsebastian.eden.EdenSys.services;
 
 import ch.qos.logback.classic.Logger;
+import com.jsebastian.eden.EdenSys.Dtos.UserResponse;
 import com.jsebastian.eden.EdenSys.Dtos.UsuarioResponse;
 import com.jsebastian.eden.EdenSys.domain.Rol;
 import com.jsebastian.eden.EdenSys.domain.User;
@@ -20,6 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -168,6 +171,21 @@ public class UserServiceImpl implements UserService {
     public List<User> obtenerTodosLosUsuarios() {
         return userRepository.findAll();
     }
+
+    @Override
+    public List<UserResponse> obtenerTodosLosUsuariosHabilitados() {
+        List<Rol> rolesInahabilitados=new ArrayList<>();
+        rolesInahabilitados.add(Rol.PENDIENTE);
+        rolesInahabilitados.add(Rol.DESVINCULADO);
+        rolesInahabilitados.add(Rol.ASESOR_LEGAL);
+        rolesInahabilitados.add(Rol.AGENTE);
+
+        List<User> usuarios=userRepository.findByRolNotIn(rolesInahabilitados);
+
+
+        return usuarios.stream().map(userMapper::toUserResponse).toList();
+    }
+
 
     /**
      * Elimina un usuario por su ID

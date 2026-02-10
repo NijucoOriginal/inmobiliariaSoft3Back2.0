@@ -53,4 +53,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByCodigoActivacion(String codigo);
 
+    List<User> findByRolNotIn(List<Rol> rols);
+
 }

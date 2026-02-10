@@ -1,8 +1,10 @@
 package com.jsebastian.eden.EdenSys.controller;
 
 import com.jsebastian.eden.EdenSys.Dtos.AuthResponse;
+import com.jsebastian.eden.EdenSys.Dtos.UserResponse;
 import com.jsebastian.eden.EdenSys.Dtos.UsuarioResponse;
 import com.jsebastian.eden.EdenSys.domain.User;
+import com.jsebastian.eden.EdenSys.repository.UserRepository;
 import com.jsebastian.eden.EdenSys.services.interfaces.UserService;
 import com.jsebastian.eden.EdenSys.Dtos.CrearUsuarioDto;
 import com.jsebastian.eden.EdenSys.exceptions.ValueConflictException;
@@ -13,10 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+
+import java.util.*;
 
 /**
  * Controlador REST para gestionar operaciones CRUD de usuarios
@@ -67,11 +67,13 @@ public class UserController {
      * Obtiene todos los usuarios
      * @return ResponseEntity con la lista de usuarios
      */
-    @GetMapping
+    /*@GetMapping
     public ResponseEntity<List<User>> obtenerTodosLosUsuarios() {
         List<User> usuarios = userService.obtenerTodosLosUsuarios();
         return new ResponseEntity<>(usuarios, HttpStatus.OK);
     }
+
+     */
 
     /**
      * Obtiene un usuario por su ID
@@ -107,6 +109,24 @@ public class UserController {
         Optional<User> usuario = userService.buscarPorCedula(cedula);
         return usuario.map(user -> new ResponseEntity<>(user, HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @GetMapping("/agente/obtenerTodos/{id}")
+    public ResponseEntity<List<UserResponse>> obtenerTodosLosUsuariosHabilitados(@PathVariable Long id) {
+        System.out.println("Llega hasta aqui");
+
+        List<UserResponse> usuarios = userService.obtenerTodosLosUsuariosHabilitados();
+
+        List<UserResponse> desocupada=new ArrayList<>();
+
+        for(UserResponse u:usuarios)
+        {
+            if(u.id()!=id)
+            {
+                desocupada.add(u);
+            }
+        }
+        return new ResponseEntity<>(desocupada, HttpStatus.OK);
     }
 
     /**

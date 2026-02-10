@@ -44,6 +44,7 @@ public interface InmuebleMapper {
     @Mapping(target = "estadoTransa", source = "estadoTransa")
     @Mapping(target = "asesorLegal", expression = "java(entity.getAsesorLegal() != null ? entity.getAsesorLegal().getId() : null)")
     @Mapping(target = "agenteAsociado", expression = "java(entity.getAgenteAsociado() != null ? entity.getAgenteAsociado().getId() : null)")
+    @Mapping(target = "propietario", expression = "java(entity.getPropietario() != null ? entity.getPropietario().getId() : null)")
     @Mapping(target = "cantidadParqueaderos", source = "cantidadParqueaderos")
     @Mapping(target = "telefonoContacto", source = "telefonoContacto")
     @Mapping(target = "nombreContacto", source = "nombreContacto")

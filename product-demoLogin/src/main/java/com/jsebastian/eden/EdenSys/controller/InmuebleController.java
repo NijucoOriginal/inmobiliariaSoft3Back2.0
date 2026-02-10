@@ -3,8 +3,10 @@ package com.jsebastian.eden.EdenSys.controller;
 import com.jsebastian.eden.EdenSys.Dtos.InmuebleDto;
 import com.jsebastian.eden.EdenSys.Dtos.InmueblePatchDto;
 import com.jsebastian.eden.EdenSys.Dtos.InmuebleResponse;
+import com.jsebastian.eden.EdenSys.domain.User;
 import com.jsebastian.eden.EdenSys.exceptions.ValueConflictException;
 import com.jsebastian.eden.EdenSys.services.interfaces.InmuebleService;
+import com.jsebastian.eden.EdenSys.services.interfaces.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
@@ -29,6 +32,8 @@ public class InmuebleController {
     private String frontendLocalUrl;
 
     private final InmuebleService inmuebleService;
+
+    private final UserService userService;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> crearInmueble(
@@ -132,6 +137,17 @@ public class InmuebleController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: " + e.getMessage());
         }
     }
+
+    @PutMapping("/agentes/transferir/{id}")
+    public ResponseEntity<?> transferirInmueble(@PathVariable Long id,@RequestBody InmuebleDto inmueble) {
+        User usuarioNormalucho = userService.buscarPorId(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con id: " + id));
+
+
+
+        return ResponseEntity.ok(usuarioNormalucho);
+    }
+
 
 
 }

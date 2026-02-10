@@ -1,5 +1,6 @@
 package com.jsebastian.eden.EdenSys.services.interfaces;
 
+import com.jsebastian.eden.EdenSys.Dtos.UserResponse;
 import com.jsebastian.eden.EdenSys.Dtos.UsuarioResponse;
 import com.jsebastian.eden.EdenSys.domain.User;
 import com.jsebastian.eden.EdenSys.Dtos.CrearUsuarioDto;
@@ -56,6 +57,8 @@ public interface UserService {
      * @return List<User> lista de todos los usuarios
      */
     List<User> obtenerTodosLosUsuarios();
+
+    List<UserResponse> obtenerTodosLosUsuariosHabilitados();
 
     /**
      * Elimina un usuario por su ID

@@ -24,5 +24,6 @@ public record InmuebleResponse(
         String nombreContacto,
         String correoContacto,
         List<String> imagenes,
+        long propietario,
         long id// ✅ solo las URLs
 ) {}
